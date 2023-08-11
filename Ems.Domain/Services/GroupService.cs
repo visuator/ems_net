@@ -58,27 +58,30 @@ public class GroupService : IGroupService
             .Where(x => x.StartingAt >= model.RequestedAt && model.RequestedAt <= x.EndingAt)
             .Where(x => x.GroupId == model.Id || x.GroupId == null)
             .ToListAsync(token);
-        var classes = _dbContext.Classes
+        var classes = await _dbContext.Classes
+            .Include(x => x.Template)
+            .ThenInclude(x => x!.Group)
             .Include(x => x.Lecturer)
-            .Include(x => x.Group)
             .Include(x => x.Lesson)
             .Include(x => x.Classroom)
-            .Where(x => x.GroupId == model.Id).Where(x => x.TemplateId == null)
-            .Where(x => x.StartingAt!.Value.Date == model.RequestedAt.Date)
-            .AsAsyncEnumerable();
-        await foreach(var @class in classes.WithCancellation(token))
+            .Where(x => x.TemplateId != null)
+            .Where(x => x.Template!.GroupId == model.Id)
+            .Where(x => x.StartingAt!.Value.UtcDateTime.Date == model.RequestedAt.UtcDateTime.Date)
+            .ProjectTo<GroupClassInfoModel>(_mapper.ConfigurationProvider)
+            .ToListAsync(token);
+        foreach(var @class in classes)
         {
             var shouldIgnore =
                 idlePeriods.Any(ip => @class.StartingAt >= ip.StartingAt && @class.EndingAt <= ip.EndingAt);
             if (shouldIgnore) continue;
-            group.Classes.Add(_mapper.Map<GroupClassInfoModel>(@class, opt => opt.AfterMap((_, dst) =>
-            {
-                if (@class.StartingAt >= model.RequestedAt && model.RequestedAt <= @class.EndingAt)
-                    dst.Status = GroupClassStatus.Current;
-                else if (@class.StartingAt >= model.RequestedAt)
-                    dst.Status = GroupClassStatus.Next;
-                else dst.Status = GroupClassStatus.Previous;
-            })));
+            
+            if (@class.StartingAt >= model.RequestedAt && model.RequestedAt <= @class.EndingAt)
+                @class.Status = GroupClassStatus.Current;
+            else if (@class.StartingAt >= model.RequestedAt)
+                @class.Status = GroupClassStatus.Next;
+            else @class.Status = GroupClassStatus.Previous;
+
+            group.Classes.Add(@class);
         }
 
         return group;
