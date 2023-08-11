@@ -7,4 +7,5 @@ namespace Ems.Core.Entities;
 [Table("lecturers", Schema = Schemas.Main)]
 public class Lecturer : Person
 {
+    public ICollection<Class> Classes { get; set; }
 }

@@ -6,4 +6,5 @@ public class ClassPeriodDto : EntityBaseDto
     public TimeSpan StartingAt { get; set; }
     public TimeSpan EndingAt { get; set; }
     public string Name { get; set; }
+    public List<ClassDto> Classes { get; set; }
 }

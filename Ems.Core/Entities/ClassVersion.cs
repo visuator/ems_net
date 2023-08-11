@@ -8,11 +8,10 @@ namespace Ems.Core.Entities;
 [Table("class_versions", Schema = Schemas.Main)]
 public class ClassVersion : EntityBase, ISingleKeyEntity
 {
+    [Column("id")] public Guid Id { get; set; }
     [Column("status")] public ClassVersionStatus Status { get; set; }
 
     [Column("name")] public string Name { get; set; }
 
     public ICollection<Class> Classes { get; set; }
-
-    [Column("id")] public Guid Id { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
 using Ems.Core.Constants;
 using Ems.Core.Entities.Abstractions;
 using Ems.Core.Entities.Enums;
@@ -13,6 +14,7 @@ public class Group : EntityBase, ISingleKeyEntity
     [Column("name")] public string Name { get; set; }
 
     public ICollection<Student> Students { get; set; }
+    public ICollection<Class> Classes { get; set; }
 
     [Column("id")] public Guid Id { get; set; }
 }

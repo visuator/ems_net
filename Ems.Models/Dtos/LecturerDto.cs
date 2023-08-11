@@ -8,4 +8,5 @@ public class LecturerDto : EntityBaseDto
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string? MiddleName { get; set; }
+    public List<ClassDto> Classes { get; set; }
 }

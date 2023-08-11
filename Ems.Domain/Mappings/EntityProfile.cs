@@ -10,6 +10,10 @@ public class EntityProfile : Profile
 {
     public EntityProfile()
     {
+        CreateMap<Group, CurrentGroupInfoModel>()
+            .ForMember(x => x.Classes, opt => opt.MapFrom(x => new List<GroupClassInfoModel>()));
+        CreateMap<Class, GroupClassInfoModel>();
+
         CreateMap<CreateSettingModel, Setting>()
             .ForMember(x => x.Id, opt => opt.Ignore());
         CreateMap<AddExternalAccountModel, ExternalAccount>()
