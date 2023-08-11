@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9"/>
+        <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="7.0.9"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4"/>
+        <PackageReference Include="PasswordGenerator" Version="2.1.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Ems.Core\Ems.Core.csproj"/>
+        <ProjectReference Include="..\Ems.Models\Ems.Models.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+</Project>
