@@ -2,5 +2,5 @@
 
 public interface IImportService
 {
-    Task Import(Stream file, CancellationToken token = new());
+    Task Import(Stream file, DateTime? requestedAt = default, CancellationToken token = new());
 }

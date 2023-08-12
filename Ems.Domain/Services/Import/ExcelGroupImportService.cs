@@ -23,7 +23,7 @@ public class ExcelGroupImportService : IImportService
         { "5-й курс", Course.Fifth }
     };
 
-    public async Task Import(Stream file, CancellationToken token = new())
+    public async Task Import(Stream file, DateTime? requestedAt = default, CancellationToken token = new())
     {
         var groups = ReadGroups(file);
         await _groupService.Import(groups, token);

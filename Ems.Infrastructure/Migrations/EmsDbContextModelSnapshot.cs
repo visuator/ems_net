@@ -29,7 +29,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -46,7 +46,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("type");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -66,7 +66,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset?>("ConfirmationExpiresAt")
+                    b.Property<DateTime?>("ConfirmationExpiresAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("confirmation_expires_at");
 
@@ -74,11 +74,11 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("confirmation_token");
 
-                    b.Property<DateTimeOffset?>("ConfirmedAt")
+                    b.Property<DateTime?>("ConfirmedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("confirmed_at");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -91,7 +91,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("failed_attempts");
 
-                    b.Property<DateTimeOffset?>("LockExpiresAt")
+                    b.Property<DateTime?>("LockExpiresAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("locked_at");
 
@@ -100,7 +100,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
 
-                    b.Property<DateTimeOffset?>("PasswordResetExpiresAt")
+                    b.Property<DateTime?>("PasswordResetExpiresAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("password_reset_expires_at");
 
@@ -118,7 +118,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("phone");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -137,11 +137,11 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("role");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -169,7 +169,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("classroom_id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -177,7 +177,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("day");
 
-                    b.Property<DateTimeOffset?>("EndingAt")
+                    b.Property<DateTime?>("EndingAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("ending_at");
 
@@ -201,7 +201,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("quarter");
 
-                    b.Property<DateTimeOffset?>("StartingAt")
+                    b.Property<DateTime?>("StartingAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("starting_at");
 
@@ -213,7 +213,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("type");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -243,7 +243,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -260,7 +260,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("interval")
                         .HasColumnName("starting_at");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -276,7 +276,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -289,7 +289,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -305,7 +305,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -314,13 +314,48 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
 
                     b.ToTable("classrooms", "main");
+                });
+
+            modelBuilder.Entity("Ems.Core.Entities.ExternalAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("account_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("ExternalAccountProvider")
+                        .HasColumnType("integer")
+                        .HasColumnName("external_account_provider");
+
+                    b.Property<string>("ExternalEmail")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("external_email");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("external_accounts", "main");
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.Group", b =>
@@ -334,7 +369,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("course");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -343,7 +378,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -359,11 +394,11 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<DateTimeOffset>("EndingAt")
+                    b.Property<DateTime>("EndingAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("ending_at");
 
@@ -371,11 +406,11 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("group_id");
 
-                    b.Property<DateTimeOffset>("StartingAt")
+                    b.Property<DateTime>("StartingAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("starting_at");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -397,7 +432,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("account_id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -415,7 +450,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("middle_name");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -433,7 +468,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -442,7 +477,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -462,11 +497,11 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("account_id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<DateTimeOffset?>("RevokedAt")
+                    b.Property<DateTime?>("RevokedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("revoked_at");
 
@@ -474,11 +509,11 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("session_token_id");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.Property<DateTimeOffset?>("UsedAt")
+                    b.Property<DateTime?>("UsedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("used_at");
 
@@ -503,7 +538,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -511,7 +546,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("current_quarter");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -531,7 +566,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("account_id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -553,7 +588,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("middle_name");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -576,7 +611,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("class_id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -584,7 +619,7 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -593,41 +628,6 @@ namespace Ems.Infrastructure.Migrations
                     b.HasIndex("ClassId");
 
                     b.ToTable("student_records", "main");
-                });
-
-            modelBuilder.Entity("Ems.Core.ExternalAccount", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("account_id");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<int>("ExternalAccountProvider")
-                        .HasColumnType("integer")
-                        .HasColumnName("external_account_provider");
-
-                    b.Property<string>("ExternalEmail")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("external_email");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("external_accounts", "main");
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.NewPasswordEmail", b =>
@@ -647,7 +647,7 @@ namespace Ems.Infrastructure.Migrations
                 {
                     b.HasBaseType("Ems.Core.Entities.Abstractions.Email");
 
-                    b.Property<DateTimeOffset>("PasswordResetExpiresAt")
+                    b.Property<DateTime>("PasswordResetExpiresAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("password_reset_expires_at");
 
@@ -663,7 +663,7 @@ namespace Ems.Infrastructure.Migrations
                 {
                     b.HasBaseType("Ems.Core.Entities.Abstractions.Email");
 
-                    b.Property<DateTimeOffset>("ConfirmationExpiresAt")
+                    b.Property<DateTime>("ConfirmationExpiresAt")
                         .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("confirmation_expires_at");
@@ -681,7 +681,7 @@ namespace Ems.Infrastructure.Migrations
                 {
                     b.HasBaseType("Ems.Core.Entities.Abstractions.Email");
 
-                    b.Property<DateTimeOffset>("ConfirmationExpiresAt")
+                    b.Property<DateTime>("ConfirmationExpiresAt")
                         .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("confirmation_expires_at");
@@ -715,7 +715,7 @@ namespace Ems.Infrastructure.Migrations
             modelBuilder.Entity("Ems.Core.Entities.Class", b =>
                 {
                     b.HasOne("Ems.Core.Entities.ClassPeriod", "ClassPeriod")
-                        .WithMany()
+                        .WithMany("Classes")
                         .HasForeignKey("ClassPeriodId");
 
                     b.HasOne("Ems.Core.Entities.ClassVersion", "ClassVersion")
@@ -723,23 +723,23 @@ namespace Ems.Infrastructure.Migrations
                         .HasForeignKey("ClassVersionId");
 
                     b.HasOne("Ems.Core.Entities.Classroom", "Classroom")
-                        .WithMany()
+                        .WithMany("Classes")
                         .HasForeignKey("ClassroomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Ems.Core.Entities.Group", "Group")
-                        .WithMany()
+                        .WithMany("Classes")
                         .HasForeignKey("GroupId");
 
                     b.HasOne("Ems.Core.Entities.Lecturer", "Lecturer")
-                        .WithMany()
+                        .WithMany("Classes")
                         .HasForeignKey("LecturerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Ems.Core.Entities.Lesson", "Lesson")
-                        .WithMany()
+                        .WithMany("Classes")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -761,6 +761,17 @@ namespace Ems.Infrastructure.Migrations
                     b.Navigation("Lesson");
 
                     b.Navigation("Template");
+                });
+
+            modelBuilder.Entity("Ems.Core.Entities.ExternalAccount", b =>
+                {
+                    b.HasOne("Ems.Core.Entities.Account", "Account")
+                        .WithMany("ExternalAccounts")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.IdlePeriod", b =>
@@ -838,17 +849,6 @@ namespace Ems.Infrastructure.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("Ems.Core.ExternalAccount", b =>
-                {
-                    b.HasOne("Ems.Core.Entities.Account", "Account")
-                        .WithMany("ExternalAccounts")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("Ems.Core.Entities.Account", b =>
                 {
                     b.Navigation("ExternalAccounts");
@@ -858,14 +858,36 @@ namespace Ems.Infrastructure.Migrations
                     b.Navigation("Roles");
                 });
 
+            modelBuilder.Entity("Ems.Core.Entities.ClassPeriod", b =>
+                {
+                    b.Navigation("Classes");
+                });
+
             modelBuilder.Entity("Ems.Core.Entities.ClassVersion", b =>
+                {
+                    b.Navigation("Classes");
+                });
+
+            modelBuilder.Entity("Ems.Core.Entities.Classroom", b =>
                 {
                     b.Navigation("Classes");
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.Group", b =>
                 {
+                    b.Navigation("Classes");
+
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("Ems.Core.Entities.Lecturer", b =>
+                {
+                    b.Navigation("Classes");
+                });
+
+            modelBuilder.Entity("Ems.Core.Entities.Lesson", b =>
+                {
+                    b.Navigation("Classes");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,9 +17,9 @@ public class RefreshToken : EntityBase, ISingleKeyEntity
 
     [Column("value")] public string Value { get; set; }
 
-    [Column("revoked_at")] public DateTimeOffset? RevokedAt { get; set; }
+    [Column("revoked_at")] public DateTime? RevokedAt { get; set; }
 
-    [Column("used_at")] public DateTimeOffset? UsedAt { get; set; }
+    [Column("used_at")] public DateTime? UsedAt { get; set; }
 
     [Column("id")] public Guid Id { get; set; }
 }

@@ -15,17 +15,17 @@ public class Account : EntityBase, ISingleKeyEntity
 
     [Column("password_hash")] public string PasswordHash { get; set; }
 
-    [Column("confirmed_at")] public DateTimeOffset? ConfirmedAt { get; set; }
+    [Column("confirmed_at")] public DateTime? ConfirmedAt { get; set; }
 
-    [Column("confirmation_expires_at")] public DateTimeOffset? ConfirmationExpiresAt { get; set; }
+    [Column("confirmation_expires_at")] public DateTime? ConfirmationExpiresAt { get; set; }
 
     [Column("confirmation_token")] public string? ConfirmationToken { get; set; }
 
-    [Column("password_reset_expires_at")] public DateTimeOffset? PasswordResetExpiresAt { get; set; }
+    [Column("password_reset_expires_at")] public DateTime? PasswordResetExpiresAt { get; set; }
 
     [Column("password_reset_token")] public string? PasswordResetToken { get; set; }
 
-    [Column("locked_at")] public DateTimeOffset? LockExpiresAt { get; set; }
+    [Column("locked_at")] public DateTime? LockExpiresAt { get; set; }
 
     [Column("failed_attempts")] public int FailedAttempts { get; set; }
 

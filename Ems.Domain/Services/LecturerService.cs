@@ -26,12 +26,12 @@ public class LecturerService : ILecturerService
         _accountOptions = accountOptions.Value;
     }
 
-    public async Task Import(List<ExcelLecturerModel> models, CancellationToken token = new())
+    public async Task Import(DateTime requestedAt, List<ExcelLecturerModel> models, CancellationToken token = new())
     {
         var password = _passwordProvider.GenerateRandomPassword();
         var passwordModel = HashHelper.HashPassword(password);
         var confirmationToken = HashHelper.GenerateRandomToken();
-        var confirmationExpiration = DateTimeOffset.UtcNow.Add(_accountOptions.LinkExpirationTime);
+        var confirmationExpiration = requestedAt.Add(_accountOptions.LinkExpirationTime);
         foreach (var model in models)
         {
             var existsLecturer = await _dbContext.Lecturers.AsTracking().Include(x => x.Account).Where(x =>
@@ -39,7 +39,7 @@ public class LecturerService : ILecturerService
                 .SingleOrDefaultAsync(token);
             if (existsLecturer is not null) _mapper.Map(model, existsLecturer);
 
-            var lecturer = _mapper.Map<Lecturer>(model, opt => opt.AfterMap((src, dst) =>
+            var lecturer = _mapper.Map<Lecturer>(model, opt => opt.AfterMap((_, dst) =>
             {
                 dst.Account.PasswordHash = passwordModel.PasswordHash;
                 dst.Account.PasswordSalt = passwordModel.PasswordSalt;

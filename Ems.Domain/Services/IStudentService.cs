@@ -4,5 +4,5 @@ namespace Ems.Domain.Services;
 
 public interface IStudentService
 {
-    Task Import(List<ExcelStudentModel> models, CancellationToken token = new());
+    Task Import(DateTime requestedAt, List<ExcelStudentModel> models, CancellationToken token = new());
 }

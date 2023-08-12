@@ -7,5 +7,5 @@ public class PasswordResetEmail : Email
 {
     [Column("password_reset_token")] public string PasswordResetToken { get; set; }
 
-    [Column("password_reset_expires_at")] public DateTimeOffset PasswordResetExpiresAt { get; set; }
+    [Column("password_reset_expires_at")] public DateTime PasswordResetExpiresAt { get; set; }
 }

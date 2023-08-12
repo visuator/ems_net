@@ -2,6 +2,6 @@
 
 public class GetGroupInfoModel
 {
-    public DateTimeOffset RequestedAt { get; set; }
+    public DateTime RequestedAt { get; set; }
     public Guid Id { get; set; }
 }

@@ -66,14 +66,14 @@ public class AccountService : IAccountService
         return await _dbContext.Accounts.Where(x => x.PasswordResetToken == passwordResetToken).AnyAsync(token);
     }
 
-    public async Task<bool> CheckPasswordResetExpiration(string passwordResetToken, DateTimeOffset requestedAt,
+    public async Task<bool> CheckPasswordResetExpiration(string passwordResetToken, DateTime requestedAt,
         CancellationToken token = new())
     {
         return await _dbContext.Accounts.Where(x => x.PasswordResetToken == passwordResetToken)
-            .Select(x => x.PasswordResetExpiresAt).SingleAsync(token) <= requestedAt;
+            .Select(x => x.PasswordResetExpiresAt).SingleAsync(token) > requestedAt;
     }
 
-    public async Task<bool> CheckPassword(string email, string password, DateTimeOffset requestedAt,
+    public async Task<bool> CheckPassword(string email, string password, DateTime requestedAt,
         CancellationToken token = new())
     {
         var dbAccount = await _dbContext.Accounts.AsTracking().Where(x => x.Email == email).SingleAsync(token);
@@ -99,15 +99,15 @@ public class AccountService : IAccountService
         return false;
     }
 
-    public async Task<bool> CheckConfirmationExpiration(string confirmationToken, DateTimeOffset requestedAt,
+    public async Task<bool> CheckConfirmationExpiration(string confirmationToken, DateTime requestedAt,
         CancellationToken token = new())
     {
         return await _dbContext.Accounts.Where(x => x.ConfirmationToken == confirmationToken)
-            .Select(x => x.ConfirmationExpiresAt).SingleAsync(token) <= requestedAt;
+            .Select(x => x.ConfirmationExpiresAt).SingleAsync(token) > requestedAt;
     }
 
 
-    public async Task<bool> IsLocked(string email, DateTimeOffset requestedAt, CancellationToken token = new())
+    public async Task<bool> IsLocked(string email, DateTime requestedAt, CancellationToken token = new())
     {
         var dbAccount = await _dbContext.Accounts.Where(x => x.Email == email).Select(x => new { x.LockExpiresAt })
             .SingleAsync(token);
@@ -135,7 +135,7 @@ public class AccountService : IAccountService
     {
         var lastSession = await _dbContext.RefreshTokens.AsTracking().OrderByDescending(x => x.CreatedAt)
             .Where(x => x.SessionTokenId == null && x.AccountId == model.AccountId).FirstAsync(token);
-        lastSession.RevokedAt = DateTimeOffset.UtcNow;
+        lastSession.RevokedAt = model.RequestedAt;
 
         await _dbContext.SaveChangesAsync(token);
     }
@@ -239,7 +239,7 @@ public class AccountService : IAccountService
         var currentRefreshToken = await _dbContext.RefreshTokens.AsTracking().Include(x => x.Account)
             .ThenInclude(x => x.Roles).Where(x => x.Value == model.RefreshToken)
             .SingleAsync(token);
-        currentRefreshToken.UsedAt = DateTimeOffset.UtcNow;
+        currentRefreshToken.UsedAt = DateTime.UtcNow;
 
         var refreshToken = new RefreshToken
         {

@@ -133,6 +133,7 @@ builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IIdlePeriodService, IdlePeriodService>();
 builder.Services.AddScoped<IExternalAccountService, ExternalAccountService>();
+builder.Services.AddScoped<IClassService, ClassService>();
 
 builder.Services.AddScoped<IScheduleService<PublishClassVersionJob>, PublishClassVersionJobQuartzScheduleService>();
 builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJobQuartzScheduleService>();

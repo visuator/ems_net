@@ -26,7 +26,7 @@ public class StudentService : IStudentService
         _accountOptions = accountOptions.Value;
     }
 
-    public async Task Import(List<ExcelStudentModel> models, CancellationToken token = new())
+    public async Task Import(DateTime requestedAt, List<ExcelStudentModel> models, CancellationToken token = new())
     {
         foreach (var model in models)
         {
@@ -44,9 +44,9 @@ public class StudentService : IStudentService
             var password = _passwordProvider.GenerateRandomPassword();
             var passwordModel = HashHelper.HashPassword(password);
             var confirmationToken = HashHelper.GenerateRandomToken();
-            var confirmationExpiration = DateTimeOffset.UtcNow.Add(_accountOptions.LinkExpirationTime);
+            var confirmationExpiration = requestedAt.Add(_accountOptions.LinkExpirationTime);
 
-            var student = _mapper.Map<Student>(model, opt => opt.AfterMap((src, dst) =>
+            var student = _mapper.Map<Student>(model, opt => opt.AfterMap((_, dst) =>
             {
                 dst.Account.PasswordHash = passwordModel.PasswordHash;
                 dst.Account.PasswordSalt = passwordModel.PasswordSalt;

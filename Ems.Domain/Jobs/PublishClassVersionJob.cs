@@ -10,7 +10,7 @@ namespace Ems.Domain.Jobs;
 public class PublishClassVersionJob
 {
     public Guid ClassVersionId { get; set; }
-    public DateTimeOffset RequestedAt { get; set; }
+    public DateTime RequestedAt { get; set; }
     public string Id => $"{ClassVersionId.ToString()}";
 
     public class QuartzHandler : IJob
@@ -54,17 +54,17 @@ public class PublishClassVersionJob
                     if (context.Trigger.Key.Name == $"immediate-{model.Id}")
                         onTime = model.RequestedAt.Date;
                     else if (context.Trigger.Key.Name == $"periodical-{model.Id}")
-                        onTime = DateTimeOffset.UtcNow.Date;
+                        onTime = DateTime.UtcNow.Date;
                     else
-                        onTime = DateTimeOffset.UtcNow.Date;
+                        onTime = DateTime.UtcNow.Date;
                     var startingAt = cron.GetNextOccurrence(onTime);
                     var scheduledStartingAt = startingAt.Date.Add(@class.ClassPeriod!.StartingAt);
                     var scheduledEndingAt = startingAt.Date.Add(@class.ClassPeriod!.EndingAt);
 
                     if (scheduledStartingAt.Day != startingAt.Day || scheduledEndingAt.Day != startingAt.Day)
                         throw new ClassDayDoesNotMatchJobException();
-                    copy.StartingAt = new DateTimeOffset(scheduledStartingAt).ToUniversalTime();
-                    copy.EndingAt = new DateTimeOffset(scheduledEndingAt).ToUniversalTime();
+                    copy.StartingAt = scheduledStartingAt;
+                    copy.EndingAt = scheduledEndingAt;
 
                     await _dbContext.Classes.AddAsync(copy);
                 }

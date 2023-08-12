@@ -13,7 +13,7 @@ public class ExcelClassPeriodImportService : IImportService
         _classPeriodService = classPeriodService;
     }
 
-    public async Task Import(Stream file, CancellationToken token = new())
+    public async Task Import(Stream file, DateTime? requestedAt = default, CancellationToken token = new())
     {
         var classPeriods = ReadClassPeriods(file);
         await _classPeriodService.Import(classPeriods, token);

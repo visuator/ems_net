@@ -37,7 +37,7 @@ public class ExcelClassVersionImportService : IImportService
         { "Практика", ClassType.Seminar }
     };
 
-    public async Task Import(Stream file, CancellationToken token = new())
+    public async Task Import(Stream file, DateTime? requestedAt = default, CancellationToken token = new())
     {
         var classVersionModel = ReadClassVersion(file);
         await _classVersionService.Import(classVersionModel, token);

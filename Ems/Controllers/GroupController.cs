@@ -30,7 +30,7 @@ public class GroupController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetGroupInfo([FromRoute] Guid id, [FromQuery] DateTimeOffset requestedAt,
+    public async Task<IActionResult> GetGroupInfo([FromRoute] Guid id, [FromQuery] DateTime requestedAt,
         CancellationToken token = new())
     {
         var model = new GetGroupInfoModel() { Id = id, RequestedAt = requestedAt };

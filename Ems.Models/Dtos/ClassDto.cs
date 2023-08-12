@@ -23,6 +23,6 @@ public class ClassDto : EntityBaseDto
     public ClassroomDto Classroom { get; set; }
     public ClassType Type { get; set; }
     public string? Link { get; set; }
-    public DateTimeOffset? StartingAt { get; set; }
-    public DateTimeOffset? EndingAt { get; set; }
+    public DateTime? StartingAt { get; set; }
+    public DateTime? EndingAt { get; set; }
 }

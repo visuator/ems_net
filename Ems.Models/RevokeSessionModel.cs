@@ -4,5 +4,6 @@ namespace Ems.Models;
 
 public class RevokeSessionModel
 {
-    [FromRoute] public Guid AccountId { get; set; }
+    public Guid AccountId { get; set; }
+    public DateTime RequestedAt { get; set; }
 }

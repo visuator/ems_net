@@ -9,7 +9,7 @@ public class EntityInterceptor : SaveChangesInterceptor
     private static void ModifyEntries(DbContext context)
     {
         var entries = context.ChangeTracker.Entries<EntityBase>();
-        var now = DateTimeOffset.UtcNow;
+        var now = DateTime.UtcNow;
         foreach (var entry in entries)
         {
             if (entry.State == EntityState.Added)

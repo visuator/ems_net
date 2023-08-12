@@ -8,14 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
-        <PackageReference Include="FluentValidation" Version="11.6.0"/>
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.6.0"/>
-        <PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.61.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9"/>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="FluentValidation" Version="11.6.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.6.0" />
+        <PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.61.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.9">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,12 +24,12 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4"/>
-        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.6.3"/>
-        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.3"/>
-        <PackageReference Include="Quartz.Serialization.Json" Version="3.6.3"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.6.3" />
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.3" />
+        <PackageReference Include="Quartz.Serialization.Json" Version="3.6.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -39,9 +39,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Ems.Domain\Ems.Domain.csproj"/>
-        <ProjectReference Include="..\Ems.Infrastructure\Ems.Infrastructure.csproj"/>
-        <ProjectReference Include="..\Ems.Models\Ems.Models.csproj"/>
+        <ProjectReference Include="..\Ems.Domain\Ems.Domain.csproj" />
+        <ProjectReference Include="..\Ems.Infrastructure\Ems.Infrastructure.csproj" />
+        <ProjectReference Include="..\Ems.Models\Ems.Models.csproj" />
     </ItemGroup>
 
 </Project>

@@ -3,5 +3,5 @@
 public class ConfirmPasswordResetModel
 {
     public string PasswordResetToken { get; set; }
-    public DateTimeOffset RequestedAt { get; set; }
+    public DateTime RequestedAt { get; set; }
 }

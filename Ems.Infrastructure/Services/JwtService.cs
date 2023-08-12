@@ -25,9 +25,8 @@ public class JwtService : IJwtService
             new(ClaimTypes.Sid, account.Id.ToString())
         };
         claims.AddRange(account.Roles.Select(x => new Claim(ClaimTypes.Role, ((int)x.Role).ToString())));
-        var now = DateTimeOffset.UtcNow;
-        var expiresAt = now.Add(_jwtOptions.ExpirationTime).UtcDateTime;
-        var issuedAt = now.UtcDateTime;
+        var now = DateTime.UtcNow;
+        var expiresAt = now.Add(_jwtOptions.ExpirationTime);
 
         var jwtHandler = new JwtSecurityTokenHandler();
         var jwtToken = jwtHandler.CreateJwtSecurityToken(
@@ -36,7 +35,7 @@ public class JwtService : IJwtService
             new ClaimsIdentity(claims),
             null,
             expiresAt,
-            issuedAt,
+            now,
             new SigningCredentials(_jwtOptions.SigningSecurityKey, SecurityAlgorithms.HmacSha256),
             new EncryptingCredentials(_jwtOptions.EncryptingSecurityKey, JwtConstants.DirectKeyUseAlg,
                 SecurityAlgorithms.Aes128CbcHmacSha256)

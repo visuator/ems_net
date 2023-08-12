@@ -13,10 +13,10 @@ public class ExcelLecturerImportService : IImportService
         _lecturerService = lecturerService;
     }
 
-    public async Task Import(Stream file, CancellationToken token = new())
+    public async Task Import(Stream file, DateTime? requestedAt = default, CancellationToken token = new())
     {
         var lecturers = ReadLecturers(file);
-        await _lecturerService.Import(lecturers, token);
+        await _lecturerService.Import(requestedAt!.Value, lecturers, token);
     }
 
     private static List<ExcelLecturerModel> ReadLecturers(Stream file)

@@ -4,7 +4,7 @@ namespace Ems.Core.Entities.Abstractions;
 
 public class EntityBase
 {
-    [Column("created_at")] public DateTimeOffset CreatedAt { get; set; }
+    [Column("created_at")] public DateTime CreatedAt { get; set; }
 
-    [Column("updated_at")] public DateTimeOffset UpdatedAt { get; set; }
+    [Column("updated_at")] public DateTime UpdatedAt { get; set; }
 }

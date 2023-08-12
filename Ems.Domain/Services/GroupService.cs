@@ -66,8 +66,10 @@ public class GroupService : IGroupService
             .Include(x => x.Classroom)
             .Where(x => x.TemplateId != null)
             .Where(x => x.Template!.GroupId == model.Id)
-            .Where(x => x.StartingAt!.Value.UtcDateTime.Date == model.RequestedAt.UtcDateTime.Date)
+            .Where(x => x.StartingAt!.Value.Date == model.RequestedAt.Date)
             .ProjectTo<GroupClassInfoModel>(_mapper.ConfigurationProvider)
+            .GroupBy(x => new { x.CreatedAt.Date, x.TemplateId })
+            .Select(x => x.OrderByDescending(c => c.CreatedAt).First())
             .ToListAsync(token);
         foreach(var @class in classes)
         {

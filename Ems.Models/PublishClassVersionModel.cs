@@ -3,5 +3,5 @@
 public class PublishClassVersionModel
 {
     public Guid ClassVersionId { get; set; }
-    public DateTimeOffset RequestedAt { get; set; }
+    public DateTime RequestedAt { get; set; }
 }

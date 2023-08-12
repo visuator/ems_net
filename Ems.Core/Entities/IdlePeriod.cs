@@ -11,9 +11,9 @@ public class IdlePeriod : EntityBase, ISingleKeyEntity
 
     public Group? Group { get; set; }
 
-    [Column("starting_at")] public DateTimeOffset StartingAt { get; set; }
+    [Column("starting_at")] public DateTime StartingAt { get; set; }
 
-    [Column("ending_at")] public DateTimeOffset EndingAt { get; set; }
+    [Column("ending_at")] public DateTime EndingAt { get; set; }
 
     [Column("id")] public Guid Id { get; set; }
 }

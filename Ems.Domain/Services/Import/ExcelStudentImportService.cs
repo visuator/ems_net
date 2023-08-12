@@ -13,10 +13,10 @@ public class ExcelStudentImportService : IImportService
         _studentService = studentService;
     }
 
-    public async Task Import(Stream file, CancellationToken token = new())
+    public async Task Import(Stream file, DateTime? requestedAt = default, CancellationToken token = new())
     {
         var students = ReadStudents(file);
-        await _studentService.Import(students, token);
+        await _studentService.Import(requestedAt!.Value, students, token);
     }
 
     private static List<ExcelStudentModel> ReadStudents(Stream file)

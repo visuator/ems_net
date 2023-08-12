@@ -13,16 +13,16 @@ public interface IAccountService
     Task<bool> AnyByConfirmationToken(string confirmationToken, CancellationToken token = new());
     Task<bool> AnyByPasswordResetToken(string passwordResetToken, CancellationToken token = new());
 
-    Task<bool> CheckPasswordResetExpiration(string passwordResetToken, DateTimeOffset requestedAt,
+    Task<bool> CheckPasswordResetExpiration(string passwordResetToken, DateTime requestedAt,
         CancellationToken token = new());
 
-    Task<bool> CheckPassword(string email, string password, DateTimeOffset requestedAt,
+    Task<bool> CheckPassword(string email, string password, DateTime requestedAt,
         CancellationToken token = new());
 
-    Task<bool> CheckConfirmationExpiration(string confirmationToken, DateTimeOffset requestedAt,
+    Task<bool> CheckConfirmationExpiration(string confirmationToken, DateTime requestedAt,
         CancellationToken token = new());
 
-    Task<bool> IsLocked(string email, DateTimeOffset requestedAt, CancellationToken token = new());
+    Task<bool> IsLocked(string email, DateTime requestedAt, CancellationToken token = new());
     Task<bool> IsRevoked(string refreshToken, CancellationToken token = new());
     Task<bool> ExternalAccountExists(Guid id, CancellationToken token = new());
     Task<bool> ExternalAccountExists(string externalEmail, CancellationToken token = new());

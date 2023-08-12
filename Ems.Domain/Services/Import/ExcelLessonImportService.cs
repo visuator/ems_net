@@ -13,7 +13,7 @@ public class ExcelLessonImportService : IImportService
         _lessonService = lessonService;
     }
 
-    public async Task Import(Stream file, CancellationToken token = new())
+    public async Task Import(Stream file, DateTime? requestedAt = default, CancellationToken token = new())
     {
         var lessons = ReadLessons(file);
         await _lessonService.Import(lessons, token);

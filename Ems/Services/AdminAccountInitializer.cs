@@ -32,7 +32,7 @@ public class AdminAccountInitializer : IHostedService
             Email = adminAccountOptions.Email,
             PasswordHash = passwordModel.PasswordHash,
             PasswordSalt = passwordModel.PasswordSalt,
-            ConfirmedAt = DateTimeOffset.UtcNow,
+            ConfirmedAt = DateTime.UtcNow,
             Phone = adminAccountOptions.Phone,
             Roles = new List<AccountRole>
             {

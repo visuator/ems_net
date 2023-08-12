@@ -8,6 +8,6 @@ public class RefreshTokenDto : EntityBaseDto
     public Guid? SessionTokenId { get; set; }
     public RefreshTokenDto? SessionToken { get; set; }
     public string Value { get; set; }
-    public DateTimeOffset? RevokedAt { get; set; }
-    public DateTimeOffset? UsedAt { get; set; }
+    public DateTime? RevokedAt { get; set; }
+    public DateTime? UsedAt { get; set; }
 }
