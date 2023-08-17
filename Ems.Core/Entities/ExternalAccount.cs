@@ -8,11 +8,11 @@ namespace Ems.Core.Entities;
 [Table("external_accounts", Schema = Schemas.Main)]
 public class ExternalAccount : EntityBase, ISingleKeyEntity
 {
-    [Column("id")] public Guid Id { get; set; }
     [Column("account_id")] public Guid AccountId { get; set; }
 
     public Account Account { get; set; }
     [Column("external_email")] public string ExternalEmail { get; set; }
 
     [Column("external_account_provider")] public ExternalAccountProvider ExternalAccountProvider { get; set; }
+    [Column("id")] public Guid Id { get; set; }
 }

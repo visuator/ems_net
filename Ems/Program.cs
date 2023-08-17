@@ -42,7 +42,11 @@ builder.Services.AddVersionedApiExplorer(opt =>
 
 builder.Services.AddScoped(typeof(ValidationActionFilter<>));
 builder.Services.Configure<ApiBehaviorOptions>(opt => { opt.SuppressInferBindingSourcesForParameters = true; });
-builder.Services.AddControllers().AddJsonOptions(
+builder.Services.AddControllers(x =>
+{
+    if (builder.Environment.IsDevelopment())
+        x.Filters.Add<RequestTimeStampActionFilter>();
+}).AddJsonOptions(
     opt =>
     {
         if (builder.Environment.IsDevelopment()) opt.JsonSerializerOptions.WriteIndented = true;
@@ -110,9 +114,12 @@ builder.Services.AddDbContext<EmsDbContext>(opt =>
 {
     opt.AddInterceptors(new EntityInterceptor());
     opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-
     var dbConnection = builder.Configuration.GetConnectionString(Connections.Db);
-    opt.UseNpgsql(dbConnection, npgsqlOpt => { npgsqlOpt.MigrationsAssembly(Assemblies.Infrastructure); });
+    opt.UseNpgsql(dbConnection, npgsqlOpt =>
+    {
+        npgsqlOpt.MigrationsAssembly(Assemblies.Infrastructure);
+        npgsqlOpt.UseNetTopologySuite();
+    });
 });
 builder.Services.AddScoped<ImportServiceProvider>();
 builder.Services.AddScoped<ExcelClassPeriodImportService>();
@@ -134,9 +141,13 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IIdlePeriodService, IdlePeriodService>();
 builder.Services.AddScoped<IExternalAccountService, ExternalAccountService>();
 builder.Services.AddScoped<IClassService, ClassService>();
+builder.Services.AddScoped<IStudentRecordSessionService, StudentRecordSessionService>();
+builder.Services.AddScoped<IStudentRecordService, StudentRecordService>();
+builder.Services.AddScoped(typeof(ValidatorResolverService<>));
 
 builder.Services.AddScoped<IScheduleService<PublishClassVersionJob>, PublishClassVersionJobQuartzScheduleService>();
 builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJobQuartzScheduleService>();
+builder.Services.AddScoped<IScheduleService<GpsStudentRecordJob>, StudentRecordJobQuartzScheduleService>();
 
 builder.Services.AddSingleton<IEmailTemplateService, EmailTemplateService>();
 builder.Services.AddSingleton<IUrlService, UrlService>();

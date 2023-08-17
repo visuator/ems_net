@@ -27,6 +27,8 @@ public class EmsDbContext : DbContext
     public DbSet<Setting> Settings { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<StudentRecord> StudentRecords { get; set; }
+    public DbSet<GeolocationStudentRecord> GeolocationStudentRecords { get; set; }
+    public DbSet<StudentRecordSession> StudentRecordSessions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,6 +36,12 @@ public class EmsDbContext : DbContext
             .HasKey(ar => new { ar.AccountId, ar.Role });
         modelBuilder.Entity<StudentRecord>()
             .HasKey(sr => new { sr.StudentId, sr.ClassId });
+        modelBuilder.Entity<GeolocationStudentRecord>()
+            .HasOne(x => x.StudentRecord)
+            .WithOne(x => x.Geolocation)
+            .HasForeignKey<GeolocationStudentRecord>(x => new { x.StudentId, x.ClassId });
+        modelBuilder.Entity<GeolocationStudentRecord>()
+            .HasKey(x => new { x.StudentId, x.ClassId });
         modelBuilder.Entity<Email>()
             .HasDiscriminator(x => x.Type)
             .HasValue<RegistrationEmail>(EmailType.Registration)

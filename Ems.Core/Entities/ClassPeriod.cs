@@ -13,7 +13,7 @@ public class ClassPeriod : EntityBase, ISingleKeyEntity
 
     [Column("name")] public string Name { get; set; }
 
-    [Column("id")] public Guid Id { get; set; }
-    
     public ICollection<Class> Classes { get; set; }
+
+    [Column("id")] public Guid Id { get; set; }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using Ems.Core.Constants;
 using Ems.Core.Entities.Abstractions;
 using Ems.Core.Entities.Enums;

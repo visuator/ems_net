@@ -2,6 +2,26 @@
 
 public static class ErrorMessages
 {
+    public static class Classroom
+    {
+        public const string IsNotExists = "CLASSROOM_NOT_EXISTS";
+    }
+
+    public static class Lesson
+    {
+        public const string IsNotExists = "LESSON_NOT_EXISTS";
+    }
+
+    public static class Lecturer
+    {
+        public const string IsNotExists = "LECTURER_NOT_EXISTS";
+    }
+
+    public static class Class
+    {
+        public const string IsNotExists = "CLASS_NOT_EXISTS";
+    }
+
     public static class Job
     {
         public const string NullModel = "JOB_NULL_MODEL";

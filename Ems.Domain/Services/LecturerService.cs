@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using AutoMapper.AspNet.OData;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
 using Ems.Infrastructure.Storages;
+using Ems.Models.Dtos;
 using Ems.Models.Excel;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -61,5 +64,15 @@ public class LecturerService : ILecturerService
         }
 
         await _dbContext.SaveChangesAsync(token);
+    }
+
+    public async Task<List<LecturerDto>> GetAll(ODataQueryOptions<LecturerDto> query, CancellationToken token = new())
+    {
+        return await _dbContext.Lecturers.GetQuery(_mapper, query).ToListAsync(token);
+    }
+
+    public async Task<bool> Exists(Guid id, CancellationToken token = new())
+    {
+        return await _dbContext.Lecturers.Where(x => x.Id == id).AnyAsync(token);
     }
 }

@@ -12,8 +12,7 @@ public class EntityProfile : Profile
     {
         CreateMap<CreateReplacementModel, Class>();
 
-        CreateMap<Group, CurrentGroupInfoModel>()
-            .ForMember(x => x.Classes, opt => opt.MapFrom(x => new List<GroupClassInfoModel>()));
+        CreateMap<Group, CurrentGroupInfoModel>();
         CreateMap<Class, GroupClassInfoModel>();
 
         CreateMap<CreateSettingModel, Setting>()

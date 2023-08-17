@@ -2,7 +2,6 @@
 using AutoMapper.AspNet.OData;
 using AutoMapper.QueryableExtensions;
 using Ems.Core.Entities;
-using Ems.Domain.Enums;
 using Ems.Infrastructure.Storages;
 using Ems.Models;
 using Ems.Models.Dtos;
@@ -53,38 +52,6 @@ public class GroupService : IGroupService
             .Where(x => x.Id == model.Id)
             .ProjectTo<CurrentGroupInfoModel>(_mapper.ConfigurationProvider)
             .SingleAsync(token);
-        var idlePeriods = await _dbContext.IdlePeriods
-            .OrderByDescending(x => x.CreatedAt)
-            .Where(x => x.StartingAt >= model.RequestedAt && model.RequestedAt <= x.EndingAt)
-            .Where(x => x.GroupId == model.Id || x.GroupId == null)
-            .ToListAsync(token);
-        var classes = await _dbContext.Classes
-            .Include(x => x.Template)
-            .ThenInclude(x => x!.Group)
-            .Include(x => x.Lecturer)
-            .Include(x => x.Lesson)
-            .Include(x => x.Classroom)
-            .Where(x => x.TemplateId != null)
-            .Where(x => x.Template!.GroupId == model.Id)
-            .Where(x => x.StartingAt!.Value.Date == model.RequestedAt.Date)
-            .ProjectTo<GroupClassInfoModel>(_mapper.ConfigurationProvider)
-            .GroupBy(x => new { x.CreatedAt.Date, x.TemplateId })
-            .Select(x => x.OrderByDescending(c => c.CreatedAt).First())
-            .ToListAsync(token);
-        foreach(var @class in classes)
-        {
-            var shouldIgnore =
-                idlePeriods.Any(ip => @class.StartingAt >= ip.StartingAt && @class.EndingAt <= ip.EndingAt);
-            if (shouldIgnore) continue;
-            
-            if (@class.StartingAt >= model.RequestedAt && model.RequestedAt <= @class.EndingAt)
-                @class.Status = GroupClassStatus.Current;
-            else if (@class.StartingAt >= model.RequestedAt)
-                @class.Status = GroupClassStatus.Next;
-            else @class.Status = GroupClassStatus.Previous;
-
-            group.Classes.Add(@class);
-        }
 
         return group;
     }

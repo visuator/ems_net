@@ -1,6 +1,7 @@
 ﻿using Ems.Domain.Services;
 using Ems.Interceptors;
 using Ems.Models;
+using Ems.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,13 @@ namespace Ems.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAccountService _accountService;
-    private readonly IValidator<DeleteExternalAccountModel> _deleteExternalAccountModelValidator;
+    private readonly ValidatorResolverService<DeleteExternalAccountModel> _deleteExternalAccountModelValidator;
+    private readonly ValidatorResolverService<RevokeSessionModel> _revokeSessionModelValidator;
     private readonly IExternalAccountService _externalAccountService;
-    private readonly IValidator<RevokeSessionModel> _revokeSessionModelValidator;
 
     public AuthController(IAccountService accountService,
-        IValidator<DeleteExternalAccountModel> deleteExternalAccountModelValidator,
-        IExternalAccountService externalAccountService, IValidator<RevokeSessionModel> revokeSessionModelValidator)
+        ValidatorResolverService<DeleteExternalAccountModel> deleteExternalAccountModelValidator,
+        IExternalAccountService externalAccountService, ValidatorResolverService<RevokeSessionModel> revokeSessionModelValidator)
     {
         _accountService = accountService;
         _deleteExternalAccountModelValidator = deleteExternalAccountModelValidator;
@@ -66,16 +67,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> RevokeSession([FromRoute] Guid accountId, CancellationToken token = new())
     {
         var model = new RevokeSessionModel { AccountId = accountId };
-        var result = await _revokeSessionModelValidator.ValidateAsync(model, token);
-        if (!result.IsValid)
-        {
-            foreach (var error in result.Errors)
-                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-            return BadRequest(new ValidationProblemDetails(ModelState));
-        }
-
-        await _accountService.RevokeSession(model, token);
-        return Ok();
+        return await _revokeSessionModelValidator.ForModel(model).HasModelStateFallback(ModelState)
+            .OnSuccess(async (innerToken, innerModel) => await _accountService.RevokeSession(innerModel, innerToken))
+            .Execute(token);
     }
 
     [HttpPost("resetPassword")]
@@ -101,14 +95,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> DeleteExternalAccount([FromRoute] Guid id, CancellationToken token = new())
     {
         var model = new DeleteExternalAccountModel { Id = id };
-        var result = await _deleteExternalAccountModelValidator.ValidateAsync(model, token);
-        if (!result.IsValid)
-        {
-            foreach (var error in result.Errors) ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-            return BadRequest(new ValidationProblemDetails(ModelState));
-        }
-
-        await _externalAccountService.DeleteExternalAccount(model, token);
-        return Ok();
+        return await _deleteExternalAccountModelValidator.ForModel(model).HasModelStateFallback(ModelState)
+            .OnSuccess(async (innerToken, innerModel) =>
+                await _externalAccountService.DeleteExternalAccount(innerModel, innerToken))
+            .Execute(token);
     }
 }

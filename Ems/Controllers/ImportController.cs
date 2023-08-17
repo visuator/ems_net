@@ -60,7 +60,8 @@ public class ImportController : ControllerBase
     }
 
     [HttpPost("lecturers")]
-    public async Task<IActionResult> ImportLecturers(IFormFile file, [FromQuery] DateTime requestedAt, CancellationToken token = new())
+    public async Task<IActionResult> ImportLecturers(IFormFile file, [FromQuery] DateTime requestedAt,
+        CancellationToken token = new())
     {
         var service = _importServiceProvider.Get(ImportCategory.Lecturers, ImportFormat.Excel);
         var stream = file.OpenReadStream();
@@ -80,7 +81,8 @@ public class ImportController : ControllerBase
     }
 
     [HttpPost("students")]
-    public async Task<IActionResult> ImportStudents(IFormFile file, [FromQuery] DateTime requestedAt, CancellationToken token = new())
+    public async Task<IActionResult> ImportStudents(IFormFile file, [FromQuery] DateTime requestedAt,
+        CancellationToken token = new())
     {
         var service = _importServiceProvider.Get(ImportCategory.Students, ImportFormat.Excel);
         var stream = file.OpenReadStream();

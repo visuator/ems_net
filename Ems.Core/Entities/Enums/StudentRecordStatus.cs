@@ -2,6 +2,7 @@
 
 public enum StudentRecordStatus
 {
+    Created,
     Late,
     OnTime,
     Passed

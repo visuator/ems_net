@@ -2,6 +2,7 @@
 using Ems.Domain.Services;
 using Ems.Interceptors;
 using Ems.Models;
+using Ems.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,19 +16,19 @@ namespace Ems.Controllers;
 public class OAuthController : ControllerBase
 {
     private readonly IAccountService _accountService;
-    private readonly IValidator<AddExternalAccountModel> _addExternalAccountModelValidator;
+    private readonly ValidatorResolverService<AddExternalAccountModel> _addExternalAccountModelValidator;
     private readonly IExternalAccountService _externalAccountService;
     private readonly IMapper _mapper;
-    private readonly IValidator<OAuthLoginModel> _oauthLoginModel;
+    private readonly ValidatorResolverService<OAuthLoginModel> _oauthLoginModelValidator;
 
     public OAuthController(IAccountService accountService, IMapper mapper,
-        IValidator<AddExternalAccountModel> addExternalAccountModelValidator,
-        IValidator<OAuthLoginModel> oauthLoginModel, IExternalAccountService externalAccountService)
+        ValidatorResolverService<AddExternalAccountModel> addExternalAccountModelValidator,
+        ValidatorResolverService<OAuthLoginModel> oauthLoginModelValidator, IExternalAccountService externalAccountService)
     {
         _accountService = accountService;
         _mapper = mapper;
         _addExternalAccountModelValidator = addExternalAccountModelValidator;
-        _oauthLoginModel = oauthLoginModel;
+        _oauthLoginModelValidator = oauthLoginModelValidator;
         _externalAccountService = externalAccountService;
     }
 
@@ -38,11 +39,9 @@ public class OAuthController : ControllerBase
         CancellationToken token = new())
     {
         var model = _mapper.Map<OAuthLoginModel>(googleOAuthModel);
-        var result = await _oauthLoginModel.ValidateAsync(model, token);
-        if (result.IsValid)
-            return Ok(await _accountService.Login(model, token));
-        foreach (var error in result.Errors) ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        return BadRequest(new ValidationProblemDetails(ModelState));
+        return await _oauthLoginModelValidator.ForModel(model).HasModelStateFallback(ModelState)
+            .OnSuccess(async (innerToken, innerModel) => await _accountService.Login(innerModel, innerToken))
+            .Execute(token);
     }
 
     [HttpPost("google/link")]
@@ -53,14 +52,9 @@ public class OAuthController : ControllerBase
         CancellationToken token = new())
     {
         var model = _mapper.Map<AddExternalAccountModel>(googleOAuthModel);
-        var result = await _addExternalAccountModelValidator.ValidateAsync(model, token);
-        if (result.IsValid)
-        {
-            await _externalAccountService.AddExternalAccount(model, token);
-            return Ok();
-        }
-
-        foreach (var error in result.Errors) ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        return BadRequest(new ValidationProblemDetails(ModelState));
+        return await _addExternalAccountModelValidator.ForModel(model).HasModelStateFallback(ModelState)
+            .OnSuccess(async (innerToken, innerModel) =>
+                await _externalAccountService.AddExternalAccount(innerModel, innerToken))
+            .Execute(token);
     }
 }
