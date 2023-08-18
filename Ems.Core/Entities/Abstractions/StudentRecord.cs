@@ -6,7 +6,7 @@ using Ems.Core.Entities.Enums;
 namespace Ems.Core.Entities;
 
 [Table("student_records", Schema = Schemas.Main)]
-public class StudentRecord : EntityBase
+public abstract class StudentRecord : EntityBase, ISingleKeyEntity
 {
     [Column("student_id")] public Guid StudentId { get; set; }
 
@@ -18,8 +18,9 @@ public class StudentRecord : EntityBase
 
     [Column("status")] public StudentRecordStatus Status { get; set; }
     [Column("type")] public StudentRecordType Type { get; set; }
-    public GeolocationStudentRecord? Geolocation { get; set; }
     [Column("session_id")]
     public Guid? SessionId { get; set; }
     public StudentRecordSession? Session { get; set; }
+    [Column("id")]
+    public Guid Id { get; set; }
 }

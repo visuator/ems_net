@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Ems.Core.Constants;
 using Ems.Core.Entities.Abstractions;
+using Ems.Core.Entities.Enums;
 
 namespace Ems.Core.Entities;
 
 [Table("student_record_sessions", Schema = Schemas.Main)]
-public class StudentRecordSession : ISingleKeyEntity
+public abstract class StudentRecordSession : ISingleKeyEntity
 {
     [Column("id")]
     public Guid Id { get; set; }
@@ -17,7 +18,7 @@ public class StudentRecordSession : ISingleKeyEntity
     public Guid ClassId { get; set; }
     public Class Class { get; set; }
     [Column("type")]
-    public StudentRecordSession Type { get; set; }
+    public StudentRecordSessionType Type { get; set; }
     
     public ICollection<StudentRecord> StudentRecords { get; set; }
 }

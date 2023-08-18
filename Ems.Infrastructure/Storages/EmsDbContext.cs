@@ -36,12 +36,12 @@ public class EmsDbContext : DbContext
             .HasKey(ar => new { ar.AccountId, ar.Role });
         modelBuilder.Entity<StudentRecord>()
             .HasKey(sr => new { sr.StudentId, sr.ClassId });
-        modelBuilder.Entity<GeolocationStudentRecord>()
-            .HasOne(x => x.StudentRecord)
-            .WithOne(x => x.Geolocation)
-            .HasForeignKey<GeolocationStudentRecord>(x => new { x.StudentId, x.ClassId });
-        modelBuilder.Entity<GeolocationStudentRecord>()
-            .HasKey(x => new { x.StudentId, x.ClassId });
+        modelBuilder.Entity<StudentRecord>()
+            .HasDiscriminator(x => x.Type)
+            .HasValue<GeolocationStudentRecord>(StudentRecordType.Geolocation);
+        modelBuilder.Entity<StudentRecordSession>()
+            .HasDiscriminator(x => x.Type)
+            .HasValue<GeolocationStudentRecordSession>(StudentRecordSessionType.Geolocation);
         modelBuilder.Entity<Email>()
             .HasDiscriminator(x => x.Type)
             .HasValue<RegistrationEmail>(EmailType.Registration)

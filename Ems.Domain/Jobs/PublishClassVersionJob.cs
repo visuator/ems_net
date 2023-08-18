@@ -7,7 +7,7 @@ using Quartz;
 
 namespace Ems.Domain.Jobs;
 
-public class PublishClassVersionJob
+public class PublishClassVersionJob : IJobBase
 {
     public Guid ClassVersionId { get; set; }
     public DateTime RequestedAt { get; set; }

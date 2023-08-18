@@ -14,15 +14,15 @@ public class StudentRecordSessionService : IStudentRecordSessionService
 {
     private readonly EmsDbContext _dbContext;
     private readonly IMapper _mapper;
-    private readonly IScheduleService<GpsStudentRecordJob> _gpsStudentRecordJobScheduleService;
-    private readonly StudentRecordSessionGpsOptions _studentRecordSessionGpsOptions;
+    private readonly IScheduleService<GeolocationStudentRecordSessionJob> _gpsStudentRecordJobScheduleService;
+    private readonly GeolocationStudentRecordSessionOptions _geolocationStudentRecordSessionOptions;
 
-    public StudentRecordSessionService(EmsDbContext dbContext, IMapper mapper, IScheduleService<GpsStudentRecordJob> gpsStudentRecordJobScheduleService, IOptions<StudentRecordSessionGpsOptions> studentRecordSessionGpsOptions)
+    public StudentRecordSessionService(EmsDbContext dbContext, IMapper mapper, IScheduleService<GeolocationStudentRecordSessionJob> gpsStudentRecordJobScheduleService, IOptions<GeolocationStudentRecordSessionOptions> studentRecordSessionGpsOptions)
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _gpsStudentRecordJobScheduleService = gpsStudentRecordJobScheduleService;
-        _studentRecordSessionGpsOptions = studentRecordSessionGpsOptions.Value;
+        _geolocationStudentRecordSessionOptions = studentRecordSessionGpsOptions.Value;
     }
 
     public async Task<StudentRecordSession> Get(Guid id, CancellationToken token = new())
@@ -30,17 +30,17 @@ public class StudentRecordSessionService : IStudentRecordSessionService
         return await _dbContext.StudentRecordSessions.Where(x => x.Id == id).SingleAsync(token);
     }
 
-    public async Task Create(CreateGpsStudentRecordSessionModel model, CancellationToken token = new ())
+    public async Task Create(CreateGeolocationStudentRecordSessionModel model, CancellationToken token = new ())
     {
         var studentRecordSession = _mapper.Map<StudentRecordSession>(model, opt => opt.AfterMap(
             (_, dst) =>
             {
-                dst.EndingAt = model.RequestedAt.Add(_studentRecordSessionGpsOptions.Expiration);
+                dst.EndingAt = model.RequestedAt.Add(_geolocationStudentRecordSessionOptions.Expiration);
             }));
         await _dbContext.StudentRecordSessions.AddAsync(studentRecordSession, token);
         await _dbContext.SaveChangesAsync(token);
 
-        await _gpsStudentRecordJobScheduleService.ScheduleJob(_mapper.Map<GpsStudentRecordJob>(studentRecordSession),
+        await _gpsStudentRecordJobScheduleService.ScheduleJob(_mapper.Map<GeolocationStudentRecordSessionJob>(studentRecordSession),
             token);
     }
 }

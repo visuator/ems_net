@@ -4,7 +4,7 @@ using Quartz;
 
 namespace Ems.Domain.Services.Scheduling;
 
-public class StudentRecordJobQuartzScheduleService : IScheduleService<GpsStudentRecordJob>
+public class StudentRecordJobQuartzScheduleService : IScheduleService<GeolocationStudentRecordSessionJob>
 {
     private readonly ISchedulerFactory _schedulerFactory;
 
@@ -13,21 +13,21 @@ public class StudentRecordJobQuartzScheduleService : IScheduleService<GpsStudent
         _schedulerFactory = schedulerFactory;
     }
 
-    public async Task ScheduleJob(GpsStudentRecordJob job, CancellationToken token = new())
+    public async Task ScheduleJob(GeolocationStudentRecordSessionJob sessionJob, CancellationToken token = new())
     {
         var scheduler = await _schedulerFactory.GetScheduler(token);
         
-        var jobDetails = JobBuilder.Create<GpsStudentRecordJob.GpsQuartzHandler>()
-            .WithIdentity($"{nameof(GpsStudentRecordJob)}-{job.Id}")
+        var jobDetails = JobBuilder.Create<GeolocationStudentRecordSessionJob.QuartzHandler>()
+            .WithIdentity($"{nameof(GeolocationStudentRecordSessionJob)}-{sessionJob.Id}")
             .UsingJobData(new JobDataMap()
             {
-                { "model", job }
+                { "model", sessionJob }
             }).Build();
 
         var immediateJobTrigger = TriggerBuilder.Create()
-            .WithIdentity($"immediate-{job.Id}")
+            .WithIdentity($"immediate-{sessionJob.Id}")
             .WithPriority(1)
-            .StartAt(job.EndingAt)
+            .StartAt(sessionJob.EndingAt)
             .Build();
         
         await scheduler.ScheduleJob(jobDetails, new[] { immediateJobTrigger }, false,

@@ -19,17 +19,9 @@ public class StudentRecordController : ControllerBase
         _studentRecordService = studentRecordService;
     }
 
-    [HttpPost]
-    [ServiceFilter(typeof(ValidationActionFilter<CreateStudentRecordModel>))]
-    public async Task<IActionResult> Create([FromBody] CreateStudentRecordModel model, CancellationToken token = new())
-    {
-        await _studentRecordService.Create(model, token);
-        return Ok();
-    }
-
     [HttpPost("geo")]
-    [ServiceFilter(typeof(ValidationActionFilter<StudentRecordAsGeolocationModel>))]
-    public async Task<IActionResult> CreateAsGeolocation([FromBody] StudentRecordAsGeolocationModel model,
+    [ServiceFilter(typeof(ValidationActionFilter<CreateGeolocationStudentRecordModel>))]
+    public async Task<IActionResult> Create([FromBody] CreateGeolocationStudentRecordModel model,
         CancellationToken token = new())
     {
         await _studentRecordService.Create(model, token);
@@ -37,7 +29,7 @@ public class StudentRecordController : ControllerBase
     }
 
     [HttpPost("qr")]
-    public async Task<IActionResult> CreateAsQrCode()
+    public async Task<IActionResult> Create()
     {
         return Ok();
     }

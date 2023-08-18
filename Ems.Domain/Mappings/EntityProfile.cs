@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
+using Ems.Domain.Jobs;
 using Ems.Models;
 using Ems.Models.Excel;
 
@@ -10,6 +11,11 @@ public class EntityProfile : Profile
 {
     public EntityProfile()
     {
+        CreateMap<GeolocationStudentRecordSession, GeolocationStudentRecordSessionJob>();
+        CreateMap<CreateGeolocationStudentRecordSessionModel, GeolocationStudentRecordSession>();
+        CreateMap<CreateGeolocationStudentRecordModel, GeolocationStudentRecord>()
+            .ForMember(x => x.Status, opt => opt.MapFrom(x => StudentRecordStatus.Created));
+        
         CreateMap<CreateReplacementModel, Class>();
 
         CreateMap<Group, CurrentGroupInfoModel>();

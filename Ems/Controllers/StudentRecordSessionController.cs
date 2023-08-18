@@ -20,8 +20,8 @@ public class StudentRecordSessionController : ControllerBase
     }
 
     [HttpPost("gps")]
-    [ServiceFilter(typeof(ValidationActionFilter<CreateGpsStudentRecordSessionModel>))]
-    public async Task<IActionResult> CreateGpsSession(CreateGpsStudentRecordSessionModel model,
+    [ServiceFilter(typeof(ValidationActionFilter<CreateGeolocationStudentRecordSessionModel>))]
+    public async Task<IActionResult> CreateGeolocation(CreateGeolocationStudentRecordSessionModel model,
         CancellationToken token = new())
     {
         await _studentRecordSessionService.Create(model, token);

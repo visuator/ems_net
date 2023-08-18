@@ -6,7 +6,7 @@ using Quartz;
 
 namespace Ems.Domain.Jobs;
 
-public class QuarterSlideJob
+public class QuarterSlideJob : IJobBase
 {
     public Guid SettingId { get; init; }
     public string Id => $"{SettingId.ToString()}";

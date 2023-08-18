@@ -118,7 +118,6 @@ builder.Services.AddDbContext<EmsDbContext>(opt =>
     opt.UseNpgsql(dbConnection, npgsqlOpt =>
     {
         npgsqlOpt.MigrationsAssembly(Assemblies.Infrastructure);
-        npgsqlOpt.UseNetTopologySuite();
     });
 });
 builder.Services.AddScoped<ImportServiceProvider>();
@@ -147,7 +146,7 @@ builder.Services.AddScoped(typeof(ValidatorResolverService<>));
 
 builder.Services.AddScoped<IScheduleService<PublishClassVersionJob>, PublishClassVersionJobQuartzScheduleService>();
 builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJobQuartzScheduleService>();
-builder.Services.AddScoped<IScheduleService<GpsStudentRecordJob>, StudentRecordJobQuartzScheduleService>();
+builder.Services.AddScoped<IScheduleService<GeolocationStudentRecordSessionJob>, StudentRecordJobQuartzScheduleService>();
 
 builder.Services.AddSingleton<IEmailTemplateService, EmailTemplateService>();
 builder.Services.AddSingleton<IUrlService, UrlService>();

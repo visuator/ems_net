@@ -4,7 +4,6 @@ using Ems.Infrastructure.Storages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -21,7 +20,6 @@ namespace Ems.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "postgis");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Ems.Core.Entities.Abstractions.Email", b =>
@@ -360,34 +358,6 @@ namespace Ems.Infrastructure.Migrations
                     b.ToTable("external_accounts", "main");
                 });
 
-            modelBuilder.Entity("Ems.Core.Entities.GeolocationStudentRecord", b =>
-                {
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("student_id");
-
-                    b.Property<Guid>("ClassId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("class_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<Point>("Location")
-                        .IsRequired()
-                        .HasColumnType("geometry")
-                        .HasColumnName("location");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("StudentId", "ClassId");
-
-                    b.ToTable("geolocation_student_records", "main");
-                });
-
             modelBuilder.Entity("Ems.Core.Entities.Group", b =>
                 {
                     b.Property<Guid>("Id")
@@ -645,6 +615,10 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
                     b.Property<Guid?>("SessionId")
                         .HasColumnType("uuid")
                         .HasColumnName("session_id");
@@ -668,6 +642,10 @@ namespace Ems.Infrastructure.Migrations
                     b.HasIndex("SessionId");
 
                     b.ToTable("student_records", "main");
+
+                    b.HasDiscriminator<int>("Type");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.StudentRecordSession", b =>
@@ -689,16 +667,19 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("started_at");
 
-                    b.Property<Guid>("TypeId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClassId");
 
-                    b.HasIndex("TypeId");
-
                     b.ToTable("student_record_sessions", "main");
+
+                    b.HasDiscriminator<int>("Type");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.NewPasswordEmail", b =>
@@ -772,6 +753,40 @@ namespace Ems.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue(2);
                 });
 
+            modelBuilder.Entity("Ems.Core.Entities.GeolocationStudentRecord", b =>
+                {
+                    b.HasBaseType("Ems.Core.Entities.StudentRecord");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision")
+                        .HasColumnName("latitude");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision")
+                        .HasColumnName("longitude");
+
+                    b.ToTable("student_records", "main");
+
+                    b.HasDiscriminator().HasValue(0);
+                });
+
+            modelBuilder.Entity("Ems.Core.Entities.GeolocationStudentRecordSession", b =>
+                {
+                    b.HasBaseType("Ems.Core.Entities.StudentRecordSession");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision")
+                        .HasColumnName("latitude");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision")
+                        .HasColumnName("longitude");
+
+                    b.ToTable("student_record_sessions", "main");
+
+                    b.HasDiscriminator().HasValue(0);
+                });
+
             modelBuilder.Entity("Ems.Core.Entities.AccountRole", b =>
                 {
                     b.HasOne("Ems.Core.Entities.Account", "Account")
@@ -843,17 +858,6 @@ namespace Ems.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("Ems.Core.Entities.GeolocationStudentRecord", b =>
-                {
-                    b.HasOne("Ems.Core.Entities.StudentRecord", "StudentRecord")
-                        .WithOne("Geolocation")
-                        .HasForeignKey("Ems.Core.Entities.GeolocationStudentRecord", "StudentId", "ClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("StudentRecord");
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.IdlePeriod", b =>
@@ -945,15 +949,7 @@ namespace Ems.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Ems.Core.Entities.StudentRecordSession", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Class");
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.Account", b =>
@@ -995,11 +991,6 @@ namespace Ems.Infrastructure.Migrations
             modelBuilder.Entity("Ems.Core.Entities.Lesson", b =>
                 {
                     b.Navigation("Classes");
-                });
-
-            modelBuilder.Entity("Ems.Core.Entities.StudentRecord", b =>
-                {
-                    b.Navigation("Geolocation");
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.StudentRecordSession", b =>
