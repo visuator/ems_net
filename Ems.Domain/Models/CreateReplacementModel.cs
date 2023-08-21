@@ -1,4 +1,5 @@
-﻿using Ems.Domain.Constants;
+﻿using System.Text.Json.Serialization;
+using Ems.Domain.Constants;
 using Ems.Domain.Services;
 using FluentValidation;
 
@@ -6,7 +7,7 @@ namespace Ems.Domain.Models;
 
 public class CreateReplacementModel
 {
-    public Guid SourceClassId { get; set; }
+    [JsonIgnore] public Guid SourceClassId { get; set; }
     public Guid LecturerId { get; set; }
     public Guid LessonId { get; set; }
     public Guid ClassroomId { get; set; }

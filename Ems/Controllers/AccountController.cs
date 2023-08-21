@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
+// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -23,6 +24,7 @@ public class AccountController : ControllerBase
         _externalAccountService = externalAccountService;
     }
 
+    // роль для админа, студента, преподавателя
     [HttpGet("authenticated")]
     [TypeFilter(typeof(AuthenticatedActionFilter))]
     public async Task<IActionResult> GetAuthenticated([FromQuery] GetAuthenticatedModel model)

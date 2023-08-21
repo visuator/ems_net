@@ -1,4 +1,5 @@
-﻿using Ems.Domain.Constants;
+﻿using System.Text.Json.Serialization;
+using Ems.Domain.Constants;
 using Ems.Domain.Services;
 using Ems.Models;
 using FluentValidation;
@@ -7,7 +8,7 @@ namespace Ems.Domain.Models;
 
 public class GetGroupCurrentModel : IRequestTimeStamp
 {
-    public Guid GroupId { get; set; }
+    [JsonIgnore] public Guid GroupId { get; set; }
     public DateTime RequestedAt { get; set; }
 
     public class Validator : AbstractValidator<GetGroupCurrentModel>

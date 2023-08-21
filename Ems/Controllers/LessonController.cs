@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
+// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]

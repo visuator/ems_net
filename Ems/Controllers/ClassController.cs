@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ems.Controllers;
 
+// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]

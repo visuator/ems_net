@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
+// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -35,6 +36,7 @@ public class SettingController : ControllerBase
         return Ok(await _settingService.GetAll(query, token));
     }
 
+    // роль студента, админа, преподавателя
     [HttpGet("qrCodeStudentRecordSessionOptions")]
     public async Task<IActionResult> GetQrCodeStudentRecordSessionOptions(CancellationToken token = new())
     {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ems.Controllers;
 
+// сделать роль только для преподавателя
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
