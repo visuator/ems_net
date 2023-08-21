@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Ems.Domain.Models;
-using Ems.Models;
 
 namespace Ems.Domain.Mappings;
 

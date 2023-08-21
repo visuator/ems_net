@@ -6,7 +6,6 @@ using Ems.Domain.Models;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
 using Ems.Infrastructure.Storages;
-using Ems.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

@@ -1,7 +1,6 @@
 ﻿using Ems.Domain.Models;
 using Ems.Domain.Services;
 using Ems.Interceptors;
-using Ems.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

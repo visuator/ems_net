@@ -1,5 +1,4 @@
 ﻿using Ems.Domain.Models;
-using Ems.Models;
 using Ems.Models.Dtos;
 using Microsoft.AspNetCore.OData.Query;
 

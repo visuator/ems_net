@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Ems.Core.Entities;
-using Ems.Domain.Enums;
 using Ems.Domain.Extensions;
 using Ems.Domain.Models;
 using Ems.Infrastructure.Storages;

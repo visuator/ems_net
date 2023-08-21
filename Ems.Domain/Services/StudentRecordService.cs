@@ -4,7 +4,6 @@ using Ems.Core.Entities.Abstractions;
 using Ems.Core.Entities.Enums;
 using Ems.Domain.Models;
 using Ems.Infrastructure.Storages;
-using Ems.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ems.Domain.Services;
@@ -34,7 +33,8 @@ public class StudentRecordService : IStudentRecordService
             .SingleAsync(token);
         qrCodeAttempt.Status = QrCodeAttemptStatus.Passed;
         var qrCodeStudentRecordSession =
-            await _dbContext.StudentRecordSessions.AsTracking().Where(x => x.Id == qrCodeAttempt.QrCodeStudentRecordSessionId).SingleAsync(token);
+            await _dbContext.StudentRecordSessions.AsTracking()
+                .Where(x => x.Id == qrCodeAttempt.QrCodeStudentRecordSessionId).SingleAsync(token);
         var studentRecord = _mapper.Map<QrCodeStudentRecord>(model, opt => opt.AfterMap(async (_, dst) =>
         {
             var student = await _dbContext.Students.Where(x => x.AccountId == model.AccountId).SingleAsync(token);
@@ -43,7 +43,7 @@ public class StudentRecordService : IStudentRecordService
         }));
         qrCodeStudentRecordSession.StudentRecords.Add(studentRecord);
         qrCodeStudentRecordSession.EndingAt = model.RequestedAt;
-        
+
         await _dbContext.SaveChangesAsync(token);
     }
 }

@@ -4,5 +4,4 @@ namespace Ems.Core.Entities;
 
 public class QrCodeStudentRecord : StudentRecord
 {
-    
 }
