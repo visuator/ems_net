@@ -12,6 +12,7 @@ public class EntityProfile : Profile
 {
     public EntityProfile()
     {
+        CreateMap<UpdateQrCodeStudentRecordStatusModel, QrCodeStudentRecord>();
         CreateMap<GeolocationStudentRecordSession, GeolocationStudentRecordSessionJob>()
             .ForMember(x => x.GeolocationStudentRecordSessionId, opt => opt.MapFrom(x => x.Id));
         CreateMap<CreateQrCodeStudentRecordSessionModel, QrCodeStudentRecordSession>();

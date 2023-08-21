@@ -32,9 +32,18 @@ public class StudentRecordService : IStudentRecordService
     {
         var qrCodeAttempt = await _dbContext.QrCodeAttempts.AsTracking().Where(x => x.Content == model.Content)
             .SingleAsync(token);
-
         qrCodeAttempt.Status = QrCodeAttemptStatus.Passed;
-
+        var qrCodeStudentRecordSession =
+            await _dbContext.StudentRecordSessions.AsTracking().Where(x => x.Id == qrCodeAttempt.QrCodeStudentRecordSessionId).SingleAsync(token);
+        var studentRecord = _mapper.Map<QrCodeStudentRecord>(model, opt => opt.AfterMap(async (_, dst) =>
+        {
+            var student = await _dbContext.Students.Where(x => x.AccountId == model.AccountId).SingleAsync(token);
+            dst.Status = StudentRecordStatus.OnTime;
+            dst.StudentId = student.Id;
+        }));
+        qrCodeStudentRecordSession.StudentRecords.Add(studentRecord);
+        qrCodeStudentRecordSession.EndingAt = model.RequestedAt;
+        
         await _dbContext.SaveChangesAsync(token);
     }
 }
