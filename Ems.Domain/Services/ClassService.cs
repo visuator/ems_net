@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Ems.Core.Entities;
 using Ems.Domain.Enums;
+using Ems.Domain.Extensions;
 using Ems.Infrastructure.Storages;
 using Ems.Models;
 using Microsoft.EntityFrameworkCore;
@@ -72,5 +73,14 @@ public class ClassService : IClassService
     public async Task<bool> Exists(Guid id, CancellationToken token = new())
     {
         return await _dbContext.Classes.Where(x => x.Id == id).AnyAsync(token);
+    }
+
+    public async Task<Class?> GetCurrent(Guid accountId, DateTime requestedAt, CancellationToken token = new())
+    {
+        var accountRoles = await _dbContext.AccountRoles.Where(x => x.AccountId == accountId).Select(x => x.Role)
+            .ToListAsync(token);
+        return await _dbContext.Classes.ResolveByAccountRoles(accountRoles, accountId)
+            .Where(x => requestedAt >= x.StartingAt && requestedAt <= x.EndingAt)
+            .SingleOrDefaultAsync(token);
     }
 }

@@ -486,6 +486,46 @@ namespace Ems.Infrastructure.Migrations
                     b.ToTable("lessons", "main");
                 });
 
+            modelBuilder.Entity("Ems.Core.Entities.QrCodeAttempt", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("content");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("image");
+
+                    b.Property<Guid>("QrCodeStudentRecordSessionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("qr_code_student_record_session_id");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QrCodeStudentRecordSessionId");
+
+                    b.ToTable("qr_code_attempts", "main");
+                });
+
             modelBuilder.Entity("Ems.Core.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -663,6 +703,10 @@ namespace Ems.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("ending_at");
 
+                    b.Property<Guid>("LecturerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("lecturer_id");
+
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("started_at");
@@ -674,6 +718,8 @@ namespace Ems.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClassId");
+
+                    b.HasIndex("LecturerId");
 
                     b.ToTable("student_record_sessions", "main");
 
@@ -787,6 +833,15 @@ namespace Ems.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue(0);
                 });
 
+            modelBuilder.Entity("Ems.Core.Entities.QrCodeStudentRecordSession", b =>
+                {
+                    b.HasBaseType("Ems.Core.Entities.StudentRecordSession");
+
+                    b.ToTable("student_record_sessions", "main");
+
+                    b.HasDiscriminator().HasValue(1);
+                });
+
             modelBuilder.Entity("Ems.Core.Entities.AccountRole", b =>
                 {
                     b.HasOne("Ems.Core.Entities.Account", "Account")
@@ -880,6 +935,17 @@ namespace Ems.Infrastructure.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("Ems.Core.Entities.QrCodeAttempt", b =>
+                {
+                    b.HasOne("Ems.Core.Entities.QrCodeStudentRecordSession", "QrCodeStudentRecordSession")
+                        .WithMany("Attempts")
+                        .HasForeignKey("QrCodeStudentRecordSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QrCodeStudentRecordSession");
+                });
+
             modelBuilder.Entity("Ems.Core.Entities.RefreshToken", b =>
                 {
                     b.HasOne("Ems.Core.Entities.Account", "Account")
@@ -949,7 +1015,15 @@ namespace Ems.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Ems.Core.Entities.Lecturer", "Lecturer")
+                        .WithMany()
+                        .HasForeignKey("LecturerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Class");
+
+                    b.Navigation("Lecturer");
                 });
 
             modelBuilder.Entity("Ems.Core.Entities.Account", b =>
@@ -996,6 +1070,11 @@ namespace Ems.Infrastructure.Migrations
             modelBuilder.Entity("Ems.Core.Entities.StudentRecordSession", b =>
                 {
                     b.Navigation("StudentRecords");
+                });
+
+            modelBuilder.Entity("Ems.Core.Entities.QrCodeStudentRecordSession", b =>
+                {
+                    b.Navigation("Attempts");
                 });
 #pragma warning restore 612, 618
         }

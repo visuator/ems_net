@@ -24,7 +24,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("authenticated")]
-    [TypeFilter(typeof(AccountIdActionFilter))]
+    [TypeFilter(typeof(AuthenticatedActionFilter))]
     public async Task<IActionResult> GetAuthenticated([FromQuery] GetAuthenticatedModel model)
     {
         return Ok(await _accountService.GetAuthenticated(model));

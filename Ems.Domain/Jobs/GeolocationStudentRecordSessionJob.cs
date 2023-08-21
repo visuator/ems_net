@@ -12,9 +12,9 @@ namespace Ems.Domain.Jobs;
 
 public class GeolocationStudentRecordSessionJob : IJobBase
 {
-    public Guid SessionId { get; set; }
+    public Guid GeolocationStudentRecordSessionId { get; set; }
     public DateTime EndingAt { get; set; }
-    public string Id => $"{SessionId.ToString()}";
+    public string Id => $"{GeolocationStudentRecordSessionId.ToString()}";
     
     public class QuartzHandler : IJob
     {
@@ -34,7 +34,7 @@ public class GeolocationStudentRecordSessionJob : IJobBase
                 if (context.MergedJobDataMap["model"] is not GeolocationStudentRecordSessionJob model)
                     throw new NullModelJobException();
                 
-                var session = await _dbContext.StudentRecordSessions.AsTracking().OfType<GeolocationStudentRecordSession>().Where(x => x.Id == model.SessionId).Include(x => x.StudentRecords.Where(sr => sr.Status == StudentRecordStatus.Created)).SingleAsync();
+                var session = await _dbContext.StudentRecordSessions.AsTracking().OfType<GeolocationStudentRecordSession>().Where(x => x.Id == model.GeolocationStudentRecordSessionId).Include(x => x.StudentRecords.Where(sr => sr.Status == StudentRecordStatus.Created)).SingleAsync();
                 var geolocationStudentRecords = session.StudentRecords.OfType<GeolocationStudentRecord>()
                     .Select(x => (x.Id, x.Latitude, x.Longitude)).ToList();
                 var distances =

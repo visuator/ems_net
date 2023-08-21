@@ -46,6 +46,7 @@ builder.Services.AddControllers(x =>
 {
     if (builder.Environment.IsDevelopment())
         x.Filters.Add<RequestTimeStampActionFilter>();
+    x.Filters.AddService<CurrentClassBindingActionFilter>();
 }).AddJsonOptions(
     opt =>
     {
@@ -109,6 +110,11 @@ builder.Services.Configure<ClassVersionOptions>(builder.Configuration.GetSection
 builder.Services.Configure<QuarterSlideJob>(builder.Configuration.GetSection(nameof(QuarterSlideJob)).Bind);
 builder.Services.Configure<EmailSenderOptions>(builder.Configuration.GetSection(nameof(EmailSenderOptions)).Bind);
 builder.Services.Configure<AdminAccountOptions>(builder.Configuration.GetSection(nameof(AdminAccountOptions)).Bind);
+builder.Services.Configure<QrCodeOptions>(builder.Configuration.GetSection(nameof(QrCodeOptions)).Bind);
+builder.Services.Configure<GeolocationStudentRecordSessionOptions>(builder.Configuration
+    .GetSection(nameof(GeolocationStudentRecordSessionOptions)).Bind);
+builder.Services.Configure<QrCodeStudentRecordSessionOptions>(builder.Configuration
+    .GetSection(nameof(QrCodeStudentRecordSessionOptions)).Bind);
 
 builder.Services.AddDbContext<EmsDbContext>(opt =>
 {
@@ -149,6 +155,7 @@ builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJobQua
 builder.Services.AddScoped<IScheduleService<GeolocationStudentRecordSessionJob>, StudentRecordJobQuartzScheduleService>();
 
 builder.Services.AddSingleton<IEmailTemplateService, EmailTemplateService>();
+builder.Services.AddSingleton<IQrCodeGenerator, QrCodeGenerator>();
 builder.Services.AddSingleton<IUrlService, UrlService>();
 builder.Services.AddAutoMapper(Assemblies.Domain);
 

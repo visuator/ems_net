@@ -2,7 +2,7 @@
 
 public enum EmailStatus
 {
-    Sent,
     Created,
+    Sent,
     Error
 }

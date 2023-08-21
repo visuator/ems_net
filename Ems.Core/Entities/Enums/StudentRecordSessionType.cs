@@ -2,5 +2,6 @@
 
 public enum StudentRecordSessionType
 {
-    Geolocation
+    Geolocation,
+    QrCode,
 }

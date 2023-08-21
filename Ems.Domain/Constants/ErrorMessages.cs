@@ -2,6 +2,10 @@
 
 public static class ErrorMessages
 {
+    public static class StudentRecordSession
+    {
+        public const string IsNotExists = "STUDENT_RECORD_SESSION_NOT_EXISTS";
+    }
     public static class Classroom
     {
         public const string IsNotExists = "CLASSROOM_NOT_EXISTS";

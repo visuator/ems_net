@@ -29,8 +29,9 @@ public class StudentRecordController : ControllerBase
     }
 
     [HttpPost("qr")]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Update([FromBody] UpdateQrCodeStudentRecordStatusModel model, CancellationToken token = new())
     {
+        await _studentRecordService.Update(model, token);
         return Ok();
     }
 }

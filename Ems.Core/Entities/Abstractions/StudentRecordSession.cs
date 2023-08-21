@@ -19,6 +19,9 @@ public abstract class StudentRecordSession : ISingleKeyEntity
     public Class Class { get; set; }
     [Column("type")]
     public StudentRecordSessionType Type { get; set; }
+    [Column("lecturer_id")]
+    public Guid LecturerId { get; set; }
+    public Lecturer Lecturer { get; set; }
     
     public ICollection<StudentRecord> StudentRecords { get; set; }
 }

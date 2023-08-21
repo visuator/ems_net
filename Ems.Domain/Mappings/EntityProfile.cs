@@ -11,6 +11,10 @@ public class EntityProfile : Profile
 {
     public EntityProfile()
     {
+        CreateMap<GeolocationStudentRecordSession, GeolocationStudentRecordSessionJob>()
+            .ForMember(x => x.GeolocationStudentRecordSessionId, opt => opt.MapFrom(x => x.Id));
+        CreateMap<CreateQrCodeStudentRecordSessionModel, QrCodeStudentRecordSession>();
+        
         CreateMap<GeolocationStudentRecordSession, GeolocationStudentRecordSessionJob>();
         CreateMap<CreateGeolocationStudentRecordSessionModel, GeolocationStudentRecordSession>();
         CreateMap<CreateGeolocationStudentRecordModel, GeolocationStudentRecord>()

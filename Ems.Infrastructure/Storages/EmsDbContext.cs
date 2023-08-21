@@ -29,6 +29,7 @@ public class EmsDbContext : DbContext
     public DbSet<StudentRecord> StudentRecords { get; set; }
     public DbSet<GeolocationStudentRecord> GeolocationStudentRecords { get; set; }
     public DbSet<StudentRecordSession> StudentRecordSessions { get; set; }
+    public DbSet<QrCodeAttempt> QrCodeAttempts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,7 +42,8 @@ public class EmsDbContext : DbContext
             .HasValue<GeolocationStudentRecord>(StudentRecordType.Geolocation);
         modelBuilder.Entity<StudentRecordSession>()
             .HasDiscriminator(x => x.Type)
-            .HasValue<GeolocationStudentRecordSession>(StudentRecordSessionType.Geolocation);
+            .HasValue<GeolocationStudentRecordSession>(StudentRecordSessionType.Geolocation)
+            .HasValue<QrCodeStudentRecordSession>(StudentRecordSessionType.QrCode);
         modelBuilder.Entity<Email>()
             .HasDiscriminator(x => x.Type)
             .HasValue<RegistrationEmail>(EmailType.Registration)

@@ -2,12 +2,14 @@
 using AutoMapper.AspNet.OData;
 using Ems.Core.Entities;
 using Ems.Domain.Jobs;
+using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
 using Ems.Infrastructure.Storages;
 using Ems.Models;
 using Ems.Models.Dtos;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Ems.Domain.Services;
 
@@ -16,13 +18,15 @@ public class SettingService : ISettingService
     private readonly EmsDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IScheduleService<QuarterSlideJob> _quarterSlideJobScheduleService;
+    private readonly QrCodeStudentRecordSessionOptions _qrCodeStudentRecordSessionOptions;
 
     public SettingService(EmsDbContext dbContext, IScheduleService<QuarterSlideJob> quarterSlideJobScheduleService,
-        IMapper mapper)
+        IMapper mapper, IOptions<QrCodeStudentRecordSessionOptions> qrCodeStudentRecordSessionOptions)
     {
         _dbContext = dbContext;
         _quarterSlideJobScheduleService = quarterSlideJobScheduleService;
         _mapper = mapper;
+        _qrCodeStudentRecordSessionOptions = qrCodeStudentRecordSessionOptions.Value;
     }
 
     public async Task<bool> AnyAsync(CancellationToken token = new())
@@ -41,5 +45,10 @@ public class SettingService : ISettingService
         await _dbContext.Settings.AddAsync(setting, token);
         await _dbContext.SaveChangesAsync(token);
         await _quarterSlideJobScheduleService.ScheduleJob(new QuarterSlideJob { SettingId = setting.Id }, token);
+    }
+
+    public Task<QrCodeStudentRecordSessionOptionsModel> GetQrCodeStudentRecordSessionOptions(CancellationToken token = new CancellationToken())
+    {
+        return Task.FromResult(_mapper.Map<QrCodeStudentRecordSessionOptionsModel>(_qrCodeStudentRecordSessionOptions));
     }
 }

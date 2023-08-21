@@ -18,7 +18,7 @@ public class EmailTemplateService : IEmailTemplateService
         var emailTemplatesFileProvider =
             _webHostEnvironment.ContentRootFileProvider.GetDirectoryContents(
                 Path.Combine(FileConstants.AppDataDirectory, FileConstants.EmailTemplatesDirectory));
-        var file = emailTemplatesFileProvider.First(x => x.Name == templateFileName);
+        var file = emailTemplatesFileProvider.Single(x => x.Name == templateFileName);
         using var reader = new StreamReader(file.CreateReadStream());
         var content = await reader.ReadToEndAsync(token);
         foreach (var placeholder in placeholders) content = content.Replace($"[{placeholder.Key}]", placeholder.Value);

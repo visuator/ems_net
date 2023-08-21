@@ -21,10 +21,19 @@ public class StudentRecordSessionController : ControllerBase
 
     [HttpPost("gps")]
     [ServiceFilter(typeof(ValidationActionFilter<CreateGeolocationStudentRecordSessionModel>))]
-    public async Task<IActionResult> CreateGeolocation(CreateGeolocationStudentRecordSessionModel model,
+    public async Task<IActionResult> Create(CreateGeolocationStudentRecordSessionModel model,
         CancellationToken token = new())
     {
         await _studentRecordSessionService.Create(model, token);
+        return Ok();
+    }
+    
+    [HttpPost("qr")]
+    [ServiceFilter(typeof(ValidationActionFilter<CreateQrCodeStudentRecordSessionModel>))]
+    public async Task<IActionResult> Create(CreateQrCodeStudentRecordSessionModel sessionModel,
+        CancellationToken token = new())
+    {
+        await _studentRecordSessionService.Create(sessionModel, token);
         return Ok();
     }
 }

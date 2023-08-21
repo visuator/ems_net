@@ -70,4 +70,9 @@ public class StudentService : IStudentService
 
         await _dbContext.SaveChangesAsync(token);
     }
+
+    public async Task<bool> Exists(Guid id, CancellationToken token = new())
+    {
+        return await _dbContext.Students.Where(x => x.Id == id).AnyAsync(token);
+    }
 }

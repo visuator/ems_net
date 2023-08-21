@@ -44,4 +44,8 @@
         <ProjectReference Include="..\Ems.Models\Ems.Models.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="AppData\Images\" />
+    </ItemGroup>
+
 </Project>

@@ -47,7 +47,7 @@ public class OAuthController : ControllerBase
     [HttpPost("google/link")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidationActionFilter<GoogleOAuthModel>))]
-    [TypeFilter(typeof(AccountIdActionFilter))]
+    [TypeFilter(typeof(AuthenticatedActionFilter))]
     public async Task<IActionResult> HandleGoogleLink([FromBody] GoogleOAuthModel googleOAuthModel,
         CancellationToken token = new())
     {

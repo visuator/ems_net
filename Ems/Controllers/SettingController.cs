@@ -34,4 +34,10 @@ public class SettingController : ControllerBase
     {
         return Ok(await _settingService.GetAll(query, token));
     }
+
+    [HttpGet("qrCodeStudentRecordSessionOptions")]
+    public async Task<IActionResult> GetQrCodeStudentRecordSessionOptions(CancellationToken token = new())
+    {
+        return Ok(await _settingService.GetQrCodeStudentRecordSessionOptions(token));
+    }
 }
