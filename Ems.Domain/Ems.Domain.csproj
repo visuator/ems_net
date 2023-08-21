@@ -7,18 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Ems.Infrastructure\Ems.Infrastructure.csproj" />
-        <ProjectReference Include="..\Ems.Models\Ems.Models.csproj" />
+        <ProjectReference Include="..\Ems.Infrastructure\Ems.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Ems.Models\Ems.Models.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper.AspNetCore.OData.EFCore" Version="4.0.0" />
-        <PackageReference Include="ExcelDataReader" Version="3.6.0" />
-        <PackageReference Include="FluentValidation" Version="11.6.0" />
-        <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" Version="1.61.0.3135" />
-        <PackageReference Include="NCrontab.Signed" Version="3.3.2" />
-        <PackageReference Include="Polly" Version="7.2.4" />
-        <PackageReference Include="Quartz" Version="3.6.3" />
+        <PackageReference Include="AutoMapper.AspNetCore.OData.EFCore" Version="4.0.0"/>
+        <PackageReference Include="ExcelDataReader" Version="3.6.0"/>
+        <PackageReference Include="FluentValidation" Version="11.6.0"/>
+        <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" Version="1.61.0.3135"/>
+        <PackageReference Include="NCrontab.Signed" Version="3.3.2"/>
+        <PackageReference Include="Polly" Version="7.2.4"/>
+        <PackageReference Include="Quartz" Version="3.6.3"/>
     </ItemGroup>
 
 </Project>

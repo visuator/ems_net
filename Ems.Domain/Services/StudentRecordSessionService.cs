@@ -14,13 +14,16 @@ namespace Ems.Domain.Services;
 public class StudentRecordSessionService : IStudentRecordSessionService
 {
     private readonly EmsDbContext _dbContext;
+    private readonly GeolocationStudentRecordSessionOptions _geolocationStudentRecordSessionOptions;
+    private readonly IScheduleService<GeolocationStudentRecordSessionJob> _gpsStudentRecordJobScheduleService;
     private readonly IMapper _mapper;
     private readonly IQrCodeGenerator _qrCodeGenerator;
-    private readonly IScheduleService<GeolocationStudentRecordSessionJob> _gpsStudentRecordJobScheduleService;
-    private readonly GeolocationStudentRecordSessionOptions _geolocationStudentRecordSessionOptions;
     private readonly QrCodeStudentRecordSessionOptions _qrCodeStudentRecordSessionOptions;
 
-    public StudentRecordSessionService(EmsDbContext dbContext, IMapper mapper, IScheduleService<GeolocationStudentRecordSessionJob> gpsStudentRecordJobScheduleService, IOptions<GeolocationStudentRecordSessionOptions> studentRecordSessionGpsOptions, IOptions<QrCodeStudentRecordSessionOptions> qrCodeStudentRecordSessionOptions, IQrCodeGenerator qrCodeGenerator)
+    public StudentRecordSessionService(EmsDbContext dbContext, IMapper mapper,
+        IScheduleService<GeolocationStudentRecordSessionJob> gpsStudentRecordJobScheduleService,
+        IOptions<GeolocationStudentRecordSessionOptions> studentRecordSessionGpsOptions,
+        IOptions<QrCodeStudentRecordSessionOptions> qrCodeStudentRecordSessionOptions, IQrCodeGenerator qrCodeGenerator)
     {
         _dbContext = dbContext;
         _mapper = mapper;
@@ -29,19 +32,17 @@ public class StudentRecordSessionService : IStudentRecordSessionService
         _qrCodeStudentRecordSessionOptions = qrCodeStudentRecordSessionOptions.Value;
         _geolocationStudentRecordSessionOptions = studentRecordSessionGpsOptions.Value;
     }
-    
-    public async Task Create(CreateGeolocationStudentRecordSessionModel model, CancellationToken token = new ())
+
+    public async Task Create(CreateGeolocationStudentRecordSessionModel model, CancellationToken token = new())
     {
         var studentRecordSession = _mapper.Map<GeolocationStudentRecordSession>(model, opt => opt.AfterMap(
-            (_, dst) =>
-            {
-                dst.EndingAt = model.RequestedAt.Add(_geolocationStudentRecordSessionOptions.Expiration);
-            }));
+            (_, dst) => { dst.EndingAt = model.RequestedAt.Add(_geolocationStudentRecordSessionOptions.Expiration); }));
         await _dbContext.StudentRecordSessions.AddAsync(studentRecordSession, token);
         await _dbContext.SaveChangesAsync(token);
 
         // отправлять уведомления вот здесь
-        await _gpsStudentRecordJobScheduleService.ScheduleJob(_mapper.Map<GeolocationStudentRecordSessionJob>(studentRecordSession),
+        await _gpsStudentRecordJobScheduleService.ScheduleJob(
+            _mapper.Map<GeolocationStudentRecordSessionJob>(studentRecordSession),
             token);
     }
 
@@ -53,13 +54,13 @@ public class StudentRecordSessionService : IStudentRecordSessionService
                 var id = Guid.NewGuid();
                 dst.Id = id;
                 dst.EndingAt = sessionModel.RequestedAt.Add(_qrCodeStudentRecordSessionOptions.Expiration);
-                dst.Attempts = new();
+                dst.Attempts = new List<QrCodeAttempt>();
 
                 for (var i = 0; i < _qrCodeStudentRecordSessionOptions.MaxAttempts; i++)
                 {
                     var content = $"{id}-{HashHelper.GenerateRandomToken()}";
                     var image = _qrCodeGenerator.Get(content, _qrCodeStudentRecordSessionOptions.LogoFileName);
-                    dst.Attempts.Add(new()
+                    dst.Attempts.Add(new QrCodeAttempt
                     {
                         Content = content,
                         Image = image,

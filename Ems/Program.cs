@@ -121,10 +121,7 @@ builder.Services.AddDbContext<EmsDbContext>(opt =>
     opt.AddInterceptors(new EntityInterceptor());
     opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     var dbConnection = builder.Configuration.GetConnectionString(Connections.Db);
-    opt.UseNpgsql(dbConnection, npgsqlOpt =>
-    {
-        npgsqlOpt.MigrationsAssembly(Assemblies.Infrastructure);
-    });
+    opt.UseNpgsql(dbConnection, npgsqlOpt => { npgsqlOpt.MigrationsAssembly(Assemblies.Infrastructure); });
 });
 builder.Services.AddScoped<ImportServiceProvider>();
 builder.Services.AddScoped<ExcelClassPeriodImportService>();
@@ -152,7 +149,8 @@ builder.Services.AddScoped(typeof(ValidatorResolverService<>));
 
 builder.Services.AddScoped<IScheduleService<PublishClassVersionJob>, PublishClassVersionJobQuartzScheduleService>();
 builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJobQuartzScheduleService>();
-builder.Services.AddScoped<IScheduleService<GeolocationStudentRecordSessionJob>, StudentRecordJobQuartzScheduleService>();
+builder.Services
+    .AddScoped<IScheduleService<GeolocationStudentRecordSessionJob>, StudentRecordJobQuartzScheduleService>();
 
 builder.Services.AddSingleton<IEmailTemplateService, EmailTemplateService>();
 builder.Services.AddSingleton<IQrCodeGenerator, QrCodeGenerator>();

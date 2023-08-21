@@ -22,15 +22,15 @@ public class ValidatorResolverService<TModel>
 
     public ValidationStrategyBuilder<TModel> HasModelStateFallback(ModelStateDictionary modelState)
     {
-        return new(_validator, _model, modelState);
+        return new ValidationStrategyBuilder<TModel>(_validator, _model, modelState);
     }
 
     public class ValidationStrategyBuilder<TModel>
     {
-        private readonly ModelStateDictionary _modelState;
-        private readonly IValidator<TModel> _validator;
         private readonly TModel _model;
+        private readonly ModelStateDictionary _modelState;
         private readonly List<ValidationStrategy<TModel>> _strategies = new();
+        private readonly IValidator<TModel> _validator;
 
         public ValidationStrategyBuilder(IValidator<TModel> validator, TModel model, ModelStateDictionary modelState)
         {

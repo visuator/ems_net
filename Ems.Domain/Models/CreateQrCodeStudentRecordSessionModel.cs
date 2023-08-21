@@ -7,10 +7,10 @@ namespace Ems.Models;
 
 public class CreateQrCodeStudentRecordSessionModel : IRequestTimeStamp, IAuthenticated, ICurrentClassBinding
 {
-    public DateTime RequestedAt { get; set; }
-    public Guid AccountId { get; set; }
     public Guid StudentId { get; set; }
+    public Guid AccountId { get; set; }
     public Class? CurrentClass { get; set; }
+    public DateTime RequestedAt { get; set; }
 
     public class Validator : AbstractValidator<CreateQrCodeStudentRecordSessionModel>
     {

@@ -9,9 +9,9 @@ public class CreateGeolocationStudentRecordSessionModel : IRequestTimeStamp, IAu
 {
     public double Longitude { get; set; }
     public double Latitude { get; set; }
-    public DateTime RequestedAt { get; set; }
     public Guid AccountId { get; set; }
     public Class? CurrentClass { get; set; }
+    public DateTime RequestedAt { get; set; }
 
     public class Validator : AbstractValidator<CreateGeolocationStudentRecordSessionModel>
     {

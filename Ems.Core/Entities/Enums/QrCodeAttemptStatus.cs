@@ -4,5 +4,5 @@ public enum QrCodeAttemptStatus
 {
     Created,
     Passed,
-    Skipped,
+    Skipped
 }

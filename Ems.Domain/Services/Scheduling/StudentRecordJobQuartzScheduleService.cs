@@ -16,10 +16,10 @@ public class StudentRecordJobQuartzScheduleService : IScheduleService<Geolocatio
     public async Task ScheduleJob(GeolocationStudentRecordSessionJob sessionJob, CancellationToken token = new())
     {
         var scheduler = await _schedulerFactory.GetScheduler(token);
-        
+
         var jobDetails = JobBuilder.Create<GeolocationStudentRecordSessionJob.QuartzHandler>()
             .WithIdentity($"{nameof(GeolocationStudentRecordSessionJob)}-{sessionJob.Id}")
-            .UsingJobData(new JobDataMap()
+            .UsingJobData(new JobDataMap
             {
                 { "model", sessionJob }
             }).Build();
@@ -29,7 +29,7 @@ public class StudentRecordJobQuartzScheduleService : IScheduleService<Geolocatio
             .WithPriority(1)
             .StartAt(sessionJob.EndingAt)
             .Build();
-        
+
         await scheduler.ScheduleJob(jobDetails, new[] { immediateJobTrigger }, false,
             token);
     }

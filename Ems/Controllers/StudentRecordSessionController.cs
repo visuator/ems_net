@@ -27,7 +27,7 @@ public class StudentRecordSessionController : ControllerBase
         await _studentRecordSessionService.Create(model, token);
         return Ok();
     }
-    
+
     [HttpPost("qr")]
     [ServiceFilter(typeof(ValidationActionFilter<CreateQrCodeStudentRecordSessionModel>))]
     public async Task<IActionResult> Create(CreateQrCodeStudentRecordSessionModel sessionModel,

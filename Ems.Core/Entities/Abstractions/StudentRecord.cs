@@ -18,9 +18,7 @@ public abstract class StudentRecord : EntityBase, ISingleKeyEntity
 
     [Column("status")] public StudentRecordStatus Status { get; set; }
     [Column("type")] public StudentRecordType Type { get; set; }
-    [Column("session_id")]
-    public Guid? SessionId { get; set; }
+    [Column("session_id")] public Guid? SessionId { get; set; }
     public StudentRecordSession? Session { get; set; }
-    [Column("id")]
-    public Guid Id { get; set; }
+    [Column("id")] public Guid Id { get; set; }
 }

@@ -17,8 +17,8 @@ public class SettingService : ISettingService
 {
     private readonly EmsDbContext _dbContext;
     private readonly IMapper _mapper;
-    private readonly IScheduleService<QuarterSlideJob> _quarterSlideJobScheduleService;
     private readonly QrCodeStudentRecordSessionOptions _qrCodeStudentRecordSessionOptions;
+    private readonly IScheduleService<QuarterSlideJob> _quarterSlideJobScheduleService;
 
     public SettingService(EmsDbContext dbContext, IScheduleService<QuarterSlideJob> quarterSlideJobScheduleService,
         IMapper mapper, IOptions<QrCodeStudentRecordSessionOptions> qrCodeStudentRecordSessionOptions)
@@ -47,7 +47,8 @@ public class SettingService : ISettingService
         await _quarterSlideJobScheduleService.ScheduleJob(new QuarterSlideJob { SettingId = setting.Id }, token);
     }
 
-    public Task<QrCodeStudentRecordSessionOptionsModel> GetQrCodeStudentRecordSessionOptions(CancellationToken token = new CancellationToken())
+    public Task<QrCodeStudentRecordSessionOptionsModel> GetQrCodeStudentRecordSessionOptions(
+        CancellationToken token = new())
     {
         return Task.FromResult(_mapper.Map<QrCodeStudentRecordSessionOptionsModel>(_qrCodeStudentRecordSessionOptions));
     }

@@ -18,7 +18,9 @@ public class UpdateQrCodeStudentRecordStatusModel : IAuthenticated, IRequestTime
                 .Cascade(CascadeMode.Stop)
                 .MustAsync(async (model, token) => await accountService.Exists(model.AccountId, token))
                 .WithMessage(ErrorMessages.Account.IsNotExists)
-                .MustAsync(async (model, token) => Guid.TryParse(model.Content.Split('-')[0], out var qrCodeStudentRecordSessionId) && await studentRecordSessionService.Exists(qrCodeStudentRecordSessionId, token))
+                .MustAsync(async (model, token) =>
+                    Guid.TryParse(model.Content.Split('-')[0], out var qrCodeStudentRecordSessionId) &&
+                    await studentRecordSessionService.Exists(qrCodeStudentRecordSessionId, token))
                 .WithMessage(ErrorMessages.StudentRecordSession.IsNotExists);
         }
     }

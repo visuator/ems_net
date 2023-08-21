@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Ems.Domain.Constants;
+﻿using Ems.Domain.Constants;
 using Ems.Domain.Services;
 using FluentValidation;
 

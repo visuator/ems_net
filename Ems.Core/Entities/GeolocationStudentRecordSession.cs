@@ -4,8 +4,6 @@ namespace Ems.Core.Entities;
 
 public class GeolocationStudentRecordSession : StudentRecordSession
 {
-    [Column("latitude")]
-    public double Latitude { get; set; }
-    [Column("longitude")]
-    public double Longitude { get; set; }
+    [Column("latitude")] public double Latitude { get; set; }
+    [Column("longitude")] public double Longitude { get; set; }
 }

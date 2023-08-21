@@ -5,7 +5,8 @@ namespace Ems.Domain.Extensions;
 
 public static class QueryableExtensions
 {
-    public static IQueryable<Class> ResolveByAccountRoles(this IQueryable<Class> query, List<Role> roles, Guid accountId)
+    public static IQueryable<Class> ResolveByAccountRoles(this IQueryable<Class> query, List<Role> roles,
+        Guid accountId)
     {
         // auto-include
         if (roles.Contains(Role.Student))

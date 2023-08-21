@@ -1,7 +1,6 @@
 ﻿using Ems.Domain.Services;
 using Ems.Models;
 using Ems.Services;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +16,9 @@ public class ClassController : ControllerBase
     private readonly ValidatorResolverService<CreateReplacementModel> _createReplacementModelValidator;
     private readonly ValidatorResolverService<GetGroupCurrentModel> _getGroupCurrentModelValidator;
 
-    public ClassController(IClassService classService, ValidatorResolverService<CreateReplacementModel> createReplacementModelValidator, ValidatorResolverService<GetGroupCurrentModel> getGroupCurrentModelValidator)
+    public ClassController(IClassService classService,
+        ValidatorResolverService<CreateReplacementModel> createReplacementModelValidator,
+        ValidatorResolverService<GetGroupCurrentModel> getGroupCurrentModelValidator)
     {
         _classService = classService;
         _createReplacementModelValidator = createReplacementModelValidator;

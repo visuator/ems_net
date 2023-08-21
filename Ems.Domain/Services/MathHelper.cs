@@ -17,7 +17,7 @@ public static class MathHelper
     {
         return Math.Sqrt(arr.Sum(value => Math.Pow(value - arr.Mean(), 2)) / arr.Count);
     }
-    
+
     public static int HaversineDistance(double lat1, double lon1, double lat2, double lon2)
     {
         const int earthRadius = 6371000; // Радиус Земли в метрах
@@ -38,7 +38,7 @@ public static class MathHelper
                 Math.Sin(lonDiff / 2) * Math.Sin(lonDiff / 2);
         var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
         var distance = (int)Math.Floor(earthRadius * c);
-        
+
         return distance;
     }
 

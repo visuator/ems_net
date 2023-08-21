@@ -8,8 +8,8 @@ namespace Ems.Infrastructure.Services;
 
 public class QrCodeGenerator : IQrCodeGenerator
 {
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly QrCodeOptions _qrCodeOptions;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public QrCodeGenerator(IOptions<QrCodeOptions> qrCodeOptions, IWebHostEnvironment webHostEnvironment)
     {

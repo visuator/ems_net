@@ -14,12 +14,12 @@ public class EntityProfile : Profile
         CreateMap<GeolocationStudentRecordSession, GeolocationStudentRecordSessionJob>()
             .ForMember(x => x.GeolocationStudentRecordSessionId, opt => opt.MapFrom(x => x.Id));
         CreateMap<CreateQrCodeStudentRecordSessionModel, QrCodeStudentRecordSession>();
-        
+
         CreateMap<GeolocationStudentRecordSession, GeolocationStudentRecordSessionJob>();
         CreateMap<CreateGeolocationStudentRecordSessionModel, GeolocationStudentRecordSession>();
         CreateMap<CreateGeolocationStudentRecordModel, GeolocationStudentRecord>()
             .ForMember(x => x.Status, opt => opt.MapFrom(x => StudentRecordStatus.Created));
-        
+
         CreateMap<CreateReplacementModel, Class>();
 
         CreateMap<Group, CurrentGroupInfoModel>();
