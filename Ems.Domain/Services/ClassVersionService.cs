@@ -3,6 +3,7 @@ using AutoMapper.AspNet.OData;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Domain.Jobs;
+using Ems.Domain.Models;
 using Ems.Infrastructure.Services;
 using Ems.Infrastructure.Storages;
 using Ems.Models;

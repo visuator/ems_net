@@ -2,6 +2,7 @@
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Domain.Jobs;
+using Ems.Domain.Models;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
 using Ems.Infrastructure.Storages;

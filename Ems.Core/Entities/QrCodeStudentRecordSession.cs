@@ -1,4 +1,6 @@
-﻿namespace Ems.Core.Entities;
+﻿using Ems.Core.Entities.Abstractions;
+
+namespace Ems.Core.Entities;
 
 public class QrCodeStudentRecordSession : StudentRecordSession
 {

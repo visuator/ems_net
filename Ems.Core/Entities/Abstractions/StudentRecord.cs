@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Ems.Core.Constants;
-using Ems.Core.Entities.Abstractions;
 using Ems.Core.Entities.Enums;
 
-namespace Ems.Core.Entities;
+namespace Ems.Core.Entities.Abstractions;
 
 [Table("student_records", Schema = Schemas.Main)]
 public abstract class StudentRecord : EntityBase, ISingleKeyEntity

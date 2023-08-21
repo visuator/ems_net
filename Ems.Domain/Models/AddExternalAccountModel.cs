@@ -3,7 +3,7 @@ using Ems.Domain.Constants;
 using Ems.Domain.Services;
 using FluentValidation;
 
-namespace Ems.Models;
+namespace Ems.Domain.Models;
 
 public class AddExternalAccountModel
 {

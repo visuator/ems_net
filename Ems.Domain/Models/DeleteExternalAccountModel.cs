@@ -2,7 +2,7 @@
 using Ems.Domain.Services;
 using FluentValidation;
 
-namespace Ems.Models;
+namespace Ems.Domain.Models;
 
 public class DeleteExternalAccountModel
 {

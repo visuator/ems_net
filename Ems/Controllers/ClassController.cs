@@ -1,4 +1,5 @@
-﻿using Ems.Domain.Services;
+﻿using Ems.Domain.Models;
+using Ems.Domain.Services;
 using Ems.Models;
 using Ems.Services;
 using Microsoft.AspNetCore.Authorization;

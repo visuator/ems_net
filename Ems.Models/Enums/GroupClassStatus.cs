@@ -1,4 +1,4 @@
-﻿namespace Ems.Domain.Enums;
+﻿namespace Ems.Models.Enums;
 
 public enum GroupClassStatus
 {

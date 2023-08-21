@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Ems.Core.Entities.Abstractions;
 
 namespace Ems.Core.Entities;
 

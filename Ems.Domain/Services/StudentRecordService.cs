@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Ems.Core.Entities;
+using Ems.Core.Entities.Abstractions;
 using Ems.Core.Entities.Enums;
+using Ems.Domain.Models;
 using Ems.Infrastructure.Storages;
 using Ems.Models;
 using Microsoft.EntityFrameworkCore;

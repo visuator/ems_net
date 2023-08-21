@@ -1,4 +1,5 @@
 ﻿using Ems.Core.Entities;
+using Ems.Domain.Models;
 using Ems.Models;
 
 namespace Ems.Domain.Services;

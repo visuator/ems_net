@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ems.Core.Entities.Enums;
+using Ems.Domain.Models;
 using Ems.Infrastructure.Services;
 using Ems.Models;
 

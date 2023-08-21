@@ -1,5 +1,5 @@
-﻿using Ems.Domain.Enums;
-using Ems.Models.Dtos;
+﻿using Ems.Models.Dtos;
+using Ems.Models.Enums;
 
 namespace Ems.Models;
 

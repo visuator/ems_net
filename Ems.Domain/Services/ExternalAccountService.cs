@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.AspNet.OData;
 using Ems.Core.Entities;
+using Ems.Domain.Models;
 using Ems.Infrastructure.Storages;
 using Ems.Models;
 using Ems.Models.Dtos;

@@ -1,7 +1,7 @@
 ﻿using Ems.Core.Entities.Enums;
 using FluentValidation;
 
-namespace Ems.Models;
+namespace Ems.Domain.Models;
 
 public class CreateSettingModel
 {

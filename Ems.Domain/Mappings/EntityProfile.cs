@@ -2,6 +2,7 @@
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Domain.Jobs;
+using Ems.Domain.Models;
 using Ems.Models;
 using Ems.Models.Excel;
 
