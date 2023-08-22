@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.AspNet.OData;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Infrastructure.Storages;
 using Ems.Models.Dtos;
@@ -24,7 +25,7 @@ public class LessonService : ILessonService
     {
         foreach (var lesson in models)
         {
-            var existsLesson = await _dbContext.Lessons.Where(x => x.Name == lesson.Name).SingleOrDefaultAsync(token);
+            var existsLesson = await _dbContext.Lessons.NotCacheable().Where(x => x.Name == lesson.Name).SingleOrDefaultAsync(token);
             if (existsLesson is null)
                 await _dbContext.Lessons.AddAsync(_mapper.Map<Lesson>(lesson), token);
             else _mapper.Map(lesson, existsLesson);

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Domain.Extensions;
 using Ems.Domain.Models;
@@ -23,7 +24,7 @@ public class ClassService : IClassService
 
     public async Task CreateReplacement(CreateReplacementModel model, CancellationToken token = new())
     {
-        var sourceClass = await _dbContext.Classes.Where(x => x.Id == model.SourceClassId).SingleAsync(token);
+        var sourceClass = await _dbContext.Classes.NotCacheable().Where(x => x.Id == model.SourceClassId).SingleAsync(token);
         var copy = _mapper.Map<Class>(model, opt => opt.AfterMap((_, dst) =>
         {
             dst.TemplateId = sourceClass.TemplateId;

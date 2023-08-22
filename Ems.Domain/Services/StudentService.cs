@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Infrastructure.Options;
@@ -30,7 +31,7 @@ public class StudentService : IStudentService
     {
         foreach (var model in models)
         {
-            var existsStudent = await _dbContext.Students.AsTracking().Include(x => x.Account).Where(x =>
+            var existsStudent = await _dbContext.Students.NotCacheable().AsTracking().Include(x => x.Account).Where(x =>
                     x.FirstName == model.FirstName && x.LastName == model.LastName && x.MiddleName == model.MiddleName)
                 .SingleOrDefaultAsync(token);
             var group = await _dbContext.Groups.Where(x => x.Name == model.GroupName).Select(x => new { x.Id })

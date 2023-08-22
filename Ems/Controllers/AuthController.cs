@@ -1,6 +1,8 @@
 ﻿using Ems.Domain.Models;
 using Ems.Domain.Services;
+using Ems.Infrastructure.Attributes;
 using Ems.Interceptors;
+using Ems.Models;
 using Ems.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +34,8 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidationActionFilter<LoginModel>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccessModel))]
+    [LoginEndpointMarker]
     public async Task<IActionResult> Login([FromBody] LoginModel model, CancellationToken token = new())
     {
         return Ok(await _accountService.Login(model, token));

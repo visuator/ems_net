@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Infrastructure.Storages;
 using Ems.Models.Excel;
@@ -21,7 +22,7 @@ public class ClassPeriodService : IClassPeriodService
     {
         foreach (var classPeriod in models)
         {
-            var existsClassPeriod = await _dbContext.ClassPeriods.Where(x => x.Name == classPeriod.Name)
+            var existsClassPeriod = await _dbContext.ClassPeriods.NotCacheable().Where(x => x.Name == classPeriod.Name)
                 .SingleOrDefaultAsync(token);
             if (existsClassPeriod is null)
                 await _dbContext.ClassPeriods.AddAsync(_mapper.Map<ClassPeriod>(classPeriod), token);

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Abstractions;
 using Ems.Core.Entities.Enums;
@@ -29,7 +30,7 @@ public class StudentRecordService : IStudentRecordService
 
     public async Task Update(UpdateQrCodeStudentRecordStatusModel model, CancellationToken token = new())
     {
-        var qrCodeAttempt = await _dbContext.QrCodeAttempts.AsTracking().Where(x => x.Content == model.Content)
+        var qrCodeAttempt = await _dbContext.QrCodeAttempts.NotCacheable().AsTracking().Where(x => x.Content == model.Content)
             .SingleAsync(token);
         qrCodeAttempt.Status = QrCodeAttemptStatus.Passed;
         var qrCodeStudentRecordSession =

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.AspNet.OData;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Infrastructure.Options;
@@ -37,7 +38,7 @@ public class LecturerService : ILecturerService
         var confirmationExpiration = requestedAt.Add(_accountOptions.LinkExpirationTime);
         foreach (var model in models)
         {
-            var existsLecturer = await _dbContext.Lecturers.AsTracking().Include(x => x.Account).Where(x =>
+            var existsLecturer = await _dbContext.Lecturers.NotCacheable().AsTracking().Include(x => x.Account).Where(x =>
                     x.FirstName == model.FirstName && x.LastName == model.LastName && x.MiddleName == model.MiddleName)
                 .SingleOrDefaultAsync(token);
             if (existsLecturer is not null) _mapper.Map(model, existsLecturer);

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.AspNet.OData;
 using AutoMapper.QueryableExtensions;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Domain.Models;
 using Ems.Infrastructure.Storages;
@@ -27,7 +28,7 @@ public class GroupService : IGroupService
     {
         foreach (var group in models)
         {
-            var existsGroup = await _dbContext.Groups.Where(x => x.Name == group.Name).SingleOrDefaultAsync(token);
+            var existsGroup = await _dbContext.Groups.NotCacheable().Where(x => x.Name == group.Name).SingleOrDefaultAsync(token);
             if (existsGroup is null)
                 await _dbContext.Groups.AddAsync(_mapper.Map<Group>(group), token);
             else

@@ -1,9 +1,14 @@
+using System.Reflection;
 using System.Text.Json;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Constants;
+using Ems.Domain.Constants;
 using Ems.Domain.Jobs;
 using Ems.Domain.Services;
 using Ems.Domain.Services.Import;
 using Ems.Domain.Services.Scheduling;
+using Ems.Infrastructure.Attributes;
+using Ems.Infrastructure.Constants;
 using Ems.Infrastructure.Exceptions;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
@@ -13,11 +18,13 @@ using Ems.Models;
 using Ems.Services;
 using Ems.Services.Hooks;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Quartz;
 
@@ -40,6 +47,7 @@ builder.Services.AddVersionedApiExplorer(opt =>
     opt.DefaultApiVersion = new ApiVersion(1, 0);
 });
 
+builder.Services.AddScoped<CurrentClassBindingActionFilter>();
 builder.Services.AddScoped(typeof(ValidationActionFilter<>));
 builder.Services.Configure<ApiBehaviorOptions>(opt => { opt.SuppressInferBindingSourcesForParameters = true; });
 builder.Services.AddControllers(x =>
@@ -58,6 +66,32 @@ builder.Services.AddControllers(x =>
 builder.Services.AddSwaggerGen(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Version 1", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Bearer token",
+        Name = HeaderNames.Authorization,
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = JwtBearerDefaults.AuthenticationScheme
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = JwtBearerDefaults.AuthenticationScheme
+                },
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+    
+    opt.OperationFilter<SwaggerODataFilter>();
 });
 
 builder.Services.AddOptions();
@@ -116,6 +150,11 @@ builder.Services.Configure<GeolocationStudentRecordSessionOptions>(builder.Confi
 builder.Services.Configure<QrCodeStudentRecordSessionOptions>(builder.Configuration
     .GetSection(nameof(QrCodeStudentRecordSessionOptions)).Bind);
 
+builder.Services.AddMemoryCache();
+builder.Services.AddEFSecondLevelCache(opt =>
+{
+    opt.UseMemoryCacheProvider();
+});
 builder.Services.AddDbContext<EmsDbContext>(opt =>
 {
     opt.AddInterceptors(new EntityInterceptor());
@@ -184,7 +223,34 @@ if (app.Environment.IsDevelopment())
         });
     });
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(opt =>
+    {
+        var loginEndpointDefinition = Assemblies.Ems
+            .GetTypes()
+            .Where(x => x.BaseType == typeof(ControllerBase) && x.GetCustomAttribute<ApiControllerAttribute>() is not null)
+            .SelectMany(x => x.GetRuntimeMethods()).FirstOrDefault(x =>
+                x.GetCustomAttribute<LoginEndpointMarkerAttribute>() is not null &&
+                (x.GetCustomAttribute<RouteAttribute>() is not null || x.GetCustomAttribute<HttpPostAttribute>() is not null) &&
+                x.GetCustomAttributes<ProducesResponseTypeAttribute>().Any());
+        if (loginEndpointDefinition is null) throw new NoLoginEndpointException(ErrorMessages.Swagger.NoLoginEndpoint);
+        var loginEndpointRoute = loginEndpointDefinition.GetCustomAttribute<RouteAttribute>()?.Template ??
+                                 loginEndpointDefinition.GetCustomAttribute<HttpPostAttribute>()?.Template;
+        if(loginEndpointRoute is null) throw new NoLoginEndpointException(ErrorMessages.Swagger.NoLoginEndpoint);
+        var loginEndpointOkResponseModelType = loginEndpointDefinition
+            .GetCustomAttributes<ProducesResponseTypeAttribute>().Where(x => x.StatusCode == StatusCodes.Status200OK)
+            .Select(x => x.Type).FirstOrDefault();
+        if (loginEndpointOkResponseModelType is null)
+            throw new NoLoginEndpointException(ErrorMessages.Swagger.NoLoginEndpoint);
+        var loginResponseModelMembers = loginEndpointOkResponseModelType.GetRuntimeProperties().ToList();
+        var modelMembers = loginResponseModelMembers.Select(x => x.Name.ToLower())
+            .Where(x => SwaggerConstants.AccessFields.Any(af => af.ToLower() == x)).ToList();
+        if (modelMembers.Count < SwaggerConstants.AccessFields.Count)
+            throw new NoLoginEndpointException(ErrorMessages.Swagger.NoLoginEndpoint);
+        //refresh endpoint
+
+        opt.UseResponseInterceptor($"function catchAccessToken(response) {{ if(!window.authStorage) {{ window.authStorage = {{ instance: {{ { string.Join(',', SwaggerConstants.AccessFields.Select(x => $"{x.ToLower()}: null"))} }}}}}} if(response.url.endsWith('{loginEndpointRoute}') && response.ok) {{ const left = response.body; const right = authStorage.instance; const leftNormalize = Object.fromEntries(Object.entries(left).map(([k, v]) => [k.toLowerCase(), v])); const rightNormalize = Object.fromEntries(Object.entries(right).map(([k, v]) => [k.toLowerCase(), v])); const res = Object.assign(rightNormalize, leftNormalize); authStorage.instance = res; return response; }} }}");
+        opt.UseRequestInterceptor("function refreshOrInject(request) { if(window.authStorage && window.authStorage.instance) { if(new Date(window.authStorage.expiresat).getTime() >= Date.now()) { console.log('need to be refreshed'); return request; } request.headers.Authorization = `Bearer ${window.authStorage.instance.accesstoken}` }; return request; }");
+    });
 }
 
 app.UseHttpsRedirection();

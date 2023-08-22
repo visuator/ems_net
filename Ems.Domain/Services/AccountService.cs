@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.AspNet.OData;
 using AutoMapper.QueryableExtensions;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Domain.Models;
@@ -77,7 +78,7 @@ public class AccountService : IAccountService
     public async Task<bool> CheckPassword(string email, string password, DateTime requestedAt,
         CancellationToken token = new())
     {
-        var dbAccount = await _dbContext.Accounts.AsTracking().Where(x => x.Email == email).SingleAsync(token);
+        var dbAccount = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == email).SingleAsync(token);
         var incomingHash = HashHelper.HashPassword(password, dbAccount.PasswordSalt).PasswordHash;
         var passwordEqual = incomingHash.SequenceEqual(dbAccount.PasswordHash);
         if (passwordEqual)
@@ -110,14 +111,14 @@ public class AccountService : IAccountService
 
     public async Task<bool> IsLocked(string email, DateTime requestedAt, CancellationToken token = new())
     {
-        var dbAccount = await _dbContext.Accounts.Where(x => x.Email == email).Select(x => new { x.LockExpiresAt })
+        var dbAccount = await _dbContext.Accounts.NotCacheable().Where(x => x.Email == email).Select(x => new { x.LockExpiresAt })
             .SingleAsync(token);
         return dbAccount.LockExpiresAt is not null && requestedAt <= dbAccount.LockExpiresAt;
     }
 
     public async Task<bool> IsRevoked(string refreshToken, CancellationToken token = new())
     {
-        return await _dbContext.RefreshTokens.Include(x => x.SessionToken)
+        return await _dbContext.RefreshTokens.NotCacheable().Include(x => x.SessionToken)
             .Where(x => x.Value == refreshToken).Select(x => x.SessionToken == null ? null : x.SessionToken.RevokedAt)
             .SingleAsync(token) is not null;
     }
@@ -134,7 +135,7 @@ public class AccountService : IAccountService
 
     public async Task RevokeSession(RevokeSessionModel model, CancellationToken token = new())
     {
-        var lastSession = await _dbContext.RefreshTokens.AsTracking().OrderByDescending(x => x.CreatedAt)
+        var lastSession = await _dbContext.RefreshTokens.NotCacheable().AsTracking().OrderByDescending(x => x.CreatedAt)
             .Where(x => x.SessionTokenId == null && x.AccountId == model.AccountId).FirstAsync(token);
         lastSession.RevokedAt = model.RequestedAt;
 
@@ -143,7 +144,7 @@ public class AccountService : IAccountService
 
     public async Task Reconfirm(ReconfirmModel model, CancellationToken token = new())
     {
-        var account = await _dbContext.Accounts.AsTracking().Where(x => x.Email == model.Email).SingleAsync(token);
+        var account = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == model.Email).SingleAsync(token);
         var confirmationToken = HashHelper.GenerateRandomToken();
         var confirmationExpiresAt = model.RequestedAt.Add(_accountOptions.LinkExpirationTime);
 
@@ -165,7 +166,7 @@ public class AccountService : IAccountService
 
     public async Task ResetPassword(ResetPasswordModel model, CancellationToken token = new())
     {
-        var account = await _dbContext.Accounts.AsTracking().Where(x => x.Email == model.Email).SingleAsync(token);
+        var account = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == model.Email).SingleAsync(token);
         var passwordResetToken = HashHelper.GenerateRandomToken();
         var passwordResetExpiresAt = model.RequestedAt.Add(_accountOptions.LinkExpirationTime);
 
@@ -186,7 +187,7 @@ public class AccountService : IAccountService
 
     public async Task ConfirmPasswordReset(ConfirmPasswordResetModel model, CancellationToken token = new())
     {
-        var account = await _dbContext.Accounts.AsTracking()
+        var account = await _dbContext.Accounts.NotCacheable().AsTracking()
             .Where(x => x.PasswordResetToken == model.PasswordResetToken).SingleAsync(token);
         var password = _passwordProvider.GenerateRandomPassword();
         var passwordModel = HashHelper.HashPassword(password);
@@ -210,7 +211,7 @@ public class AccountService : IAccountService
 
     public async Task Confirm(ConfirmModel model, CancellationToken token = new())
     {
-        var account = await _dbContext.Accounts.AsTracking()
+        var account = await _dbContext.Accounts.NotCacheable().AsTracking()
             .Where(x => x.ConfirmationToken == model.ConfirmationToken).SingleAsync(token);
 
         account.ConfirmationToken = null;
@@ -222,14 +223,14 @@ public class AccountService : IAccountService
 
     public async Task<AccessModel> Login(LoginModel model, CancellationToken token = new())
     {
-        var dbAccount = await _dbContext.Accounts.Include(x => x.Roles).Where(x => x.Email == model.Email)
+        var dbAccount = await _dbContext.Accounts.NotCacheable().Include(x => x.Roles).Where(x => x.Email == model.Email)
             .SingleAsync(token);
         return await LoginInner(dbAccount, token);
     }
 
     public async Task<AccessModel> Login(OAuthLoginModel model, CancellationToken token = new())
     {
-        var dbAccount = await _dbContext.Accounts.Include(x => x.Roles).Include(x => x.ExternalAccounts)
+        var dbAccount = await _dbContext.Accounts.NotCacheable().Include(x => x.Roles).Include(x => x.ExternalAccounts)
             .Where(x => x.ExternalAccounts.Select(ea => ea.ExternalEmail).Contains(model.ExternalEmail))
             .SingleAsync(token);
         return await LoginInner(dbAccount, token);
@@ -237,7 +238,7 @@ public class AccountService : IAccountService
 
     public async Task<AccessModel> Refresh(RefreshModel model, CancellationToken token = new())
     {
-        var currentRefreshToken = await _dbContext.RefreshTokens.AsTracking().Include(x => x.Account)
+        var currentRefreshToken = await _dbContext.RefreshTokens.NotCacheable().AsTracking().Include(x => x.Account)
             .ThenInclude(x => x.Roles).Where(x => x.Value == model.RefreshToken)
             .SingleAsync(token);
         currentRefreshToken.UsedAt = DateTime.UtcNow;

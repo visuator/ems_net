@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.AspNet.OData;
+using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Domain.Jobs;
@@ -62,7 +63,7 @@ public class ClassVersionService : IClassVersionService
     {
         await _publishClassVersionScheduleService.ScheduleJob(_mapper.Map<PublishClassVersionJob>(model), token);
 
-        var classVersion = await _dbContext.ClassVersions.AsTracking().Where(x => x.Id == model.ClassVersionId)
+        var classVersion = await _dbContext.ClassVersions.NotCacheable().AsTracking().Where(x => x.Id == model.ClassVersionId)
             .SingleAsync(token);
         classVersion.Status = ClassVersionStatus.Published;
         await _dbContext.SaveChangesAsync(token);

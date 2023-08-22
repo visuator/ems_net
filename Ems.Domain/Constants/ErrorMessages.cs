@@ -2,6 +2,10 @@
 
 public static class ErrorMessages
 {
+    public static class Swagger
+    {
+        public const string NoLoginEndpoint = "NO_LOGIN_ENDPOINT";
+    }
     public static class StudentRecordSession
     {
         public const string IsNotExists = "STUDENT_RECORD_SESSION_NOT_EXISTS";
