@@ -64,8 +64,13 @@
         // Apply mandatory parameters
         configObject.dom_id = "#swagger-ui";
 
-        //configObject.requestInterceptor = requestInterceptor;
-        //configObject.responseInterceptor = responseInterceptor;
+        configObject.requestInterceptor = (request) => {
+            accessTokenInjector(request);
+        };
+        configObject.responseInterceptor = (response) => {
+            loginEndpointCatcher(response);
+        };
+
         configObject.presets = [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset];
         configObject.layout = "StandaloneLayout";
         configObject.plugins = [
@@ -106,7 +111,7 @@
                     },
                     reducers: {
                         "AUTH_INTERCEPTORS_SET_TOKEN": (state, action) => {
-                            return state.set("currentToken", `${action.payload.name} ${action.payload.value}`);
+                            return state.set("currentToken", action.payload.value);
                         }
                     },
                     selectors: {
@@ -117,8 +122,9 @@
             wrapComponents: {
                 apiKeyAuth: (Original, system) => (props) => {
                     return <Original {...props} onChange={e => {
-                        props.onChange(e);
-                        system.authInterceptorsActions.setToken(e);
+                        const eventWrap = e.name === "Bearer" ? { name: e.name, schema: e.schema, value: `Bearer ${e.value}` } : e; 
+                        props.onChange(eventWrap);
+                        system.authInterceptorsActions.setToken(eventWrap);
                     }}/>
                 }
             },
@@ -130,7 +136,7 @@
     }
 </script>
 <script>
-    const responseInterceptor = (response) => {
+    const loginEndpointCatcher = (response) => {
         if (!window.authStorage) {
             window.authStorage = {instance: {accessToken: null, refreshToken: null, expiresAt: null}}
         }
@@ -141,7 +147,8 @@
             return response;
         }
     };
-    const requestInterceptor = (request) => {
+    const accessTokenInjector = (request) => {
+        if (window.ui && window.ui.currentToken()) return;
         if (window.authStorage && window.authStorage.instance) {
             if (Date.now() >= new Date(window.authStorage.instance.expiresAt).getTime() && window.authStorage.instance.refreshToken) {
                 fetch(`${window.location.origin}/api/v1/refresh`, {
