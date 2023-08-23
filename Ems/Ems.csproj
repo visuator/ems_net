@@ -49,4 +49,10 @@
         <Folder Include="AppData\Images\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="AppData\Static\swagger_ui.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

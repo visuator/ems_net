@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta
+            name="description"
+            content="SwaggerUI"
+    />
+    <title>%(DocumentTitle)</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css"/>
+    <style>
+
+        html {
+            box-sizing: border-box;
+            overflow-y: scroll;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            background: #fafafa;
+        }
+    </style>
+    %(HeadContent)
+</head>
+<body>
+<div id="swagger-ui"></div>
+<script>
+    if (window.navigator.userAgent.indexOf("Edge") > -1) {
+        console.log("Removing native Edge fetch in favor of swagger-ui's polyfill")
+        window.fetch = undefined;
+    }
+</script>
+<script src="https://unpkg.com/react@16.7.0/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin></script>
+<script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js" crossorigin></script>
+<script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-standalone-preset.js" crossorigin></script>
+<script>
+    window.onload = function () {
+        var configObject = JSON.parse('%(ConfigObject)');
+        var oauthConfigObject = JSON.parse('%(OAuthConfigObject)');
+
+        // Workaround for https://github.com/swagger-api/swagger-ui/issues/5945
+        configObject.urls.forEach(function (item) {
+            if (item.url.startsWith("http") || item.url.startsWith("/")) return;
+            item.url = window.location.href.replace("index.html", item.url).split('#')[0];
+        });
+
+        // If validatorUrl is not explicitly provided, disable the feature by setting to null
+        if (!configObject.hasOwnProperty("validatorUrl"))
+            configObject.validatorUrl = null
+
+        // If oauth2RedirectUrl isn't specified, use the built-in default
+        if (!configObject.hasOwnProperty("oauth2RedirectUrl"))
+            configObject.oauth2RedirectUrl = (new URL("oauth2-redirect.html", window.location.href)).href;
+
+        // Apply mandatory parameters
+        configObject.dom_id = "#swagger-ui";
+
+        //configObject.requestInterceptor = requestInterceptor;
+        //configObject.responseInterceptor = responseInterceptor;
+        configObject.presets = [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset];
+        configObject.layout = "StandaloneLayout";
+        configObject.plugins = [
+            HideCurlPlugin,
+            AuthState,
+        ];
+
+        // Begin Swagger UI call region
+
+        const ui = SwaggerUIBundle(configObject);
+
+        ui.initOAuth(oauthConfigObject);
+
+        // End Swagger UI call region
+
+        window.ui = ui
+    }
+</script>
+<script type="text/jsx">
+    const HideCurlPlugin = (system) => {
+        return {
+            wrapComponents: {
+                curl: () => () => null
+            }
+        }
+    }
+    const AuthState = (system) => {
+        return {
+            statePlugins: {
+                authInterceptors: {
+                    actions: {
+                        setToken: (model) => {
+                            return {
+                                type: "AUTH_INTERCEPTORS_SET_TOKEN",
+                                payload: model
+                            }
+                        }
+                    },
+                    reducers: {
+                        "AUTH_INTERCEPTORS_SET_TOKEN": (state, action) => {
+                            return state.set("currentToken", `${action.payload.name} ${action.payload.value}`);
+                        }
+                    },
+                    selectors: {
+                        currentToken: (state) => state.get("currentToken")
+                    }
+                }
+            },
+            wrapComponents: {
+                apiKeyAuth: (Original, system) => (props) => {
+                    return <Original {...props} onChange={e => {
+                        props.onChange(e);
+                        system.authInterceptorsActions.setToken(e);
+                    }}/>
+                }
+            },
+            afterLoad() {
+                this.rootInjects = this.rootInjects || {}
+                this.rootInjects.currentToken = system.authInterceptorsSelectors.currentToken;
+            }
+        }
+    }
+</script>
+<script>
+    const responseInterceptor = (response) => {
+        if (!window.authStorage) {
+            window.authStorage = {instance: {accessToken: null, refreshToken: null, expiresAt: null}}
+        }
+        if (response.url.endsWith('api/v1/login') && response.ok) {
+            const left = response.body;
+            const right = authStorage.instance;
+            authStorage.instance = Object.assign(right, left);
+            return response;
+        }
+    };
+    const requestInterceptor = (request) => {
+        if (window.authStorage && window.authStorage.instance) {
+            if (Date.now() >= new Date(window.authStorage.instance.expiresAt).getTime() && window.authStorage.instance.refreshToken) {
+                fetch(`${window.location.origin}/api/v1/refresh`, {
+                    method: 'POST',
+                    headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        refreshToken: authStorage.instance.refreshToken,
+                        requestedAt: new Date(Date.now()).toJSON()
+                    })
+                }).then(async (r) => {
+                    window.authStorage.instance = JSON.parse(await r.json());
+                });
+            }
+            request.headers.Authorization = `Bearer ${window.authStorage.instance.accessToken}`
+        }
+        return request;
+    }
+</script>
+</body>
+</html>

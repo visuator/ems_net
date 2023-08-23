@@ -19,11 +19,4 @@ public static class SwaggerConstants
         In = ParameterLocation.Query,
         Description = pair.Value,
     }).ToList();
-
-    public static readonly List<string> AccessFields = new()
-    {
-        "accessToken",
-        "refreshToken",
-        "expiresAt",
-    };
 }

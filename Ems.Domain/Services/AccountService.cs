@@ -256,7 +256,8 @@ public class AccountService : IAccountService
         return new AccessModel
         {
             AccessToken = jwt.AccessToken, RefreshToken = refreshToken.Value,
-            Roles = currentRefreshToken.Account.Roles.Select(x => x.Role).ToList()
+            Roles = currentRefreshToken.Account.Roles.Select(x => x.Role).ToList(),
+            ExpiresAt = jwt.ExpiresAt,
         };
     }
 

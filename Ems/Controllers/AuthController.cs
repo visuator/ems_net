@@ -1,6 +1,5 @@
 ﻿using Ems.Domain.Models;
 using Ems.Domain.Services;
-using Ems.Infrastructure.Attributes;
 using Ems.Interceptors;
 using Ems.Models;
 using Ems.Services;
@@ -35,7 +34,6 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidationActionFilter<LoginModel>))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccessModel))]
-    [LoginEndpointMarker]
     public async Task<IActionResult> Login([FromBody] LoginModel model, CancellationToken token = new())
     {
         return Ok(await _accountService.Login(model, token));
@@ -44,6 +42,7 @@ public class AuthController : ControllerBase
     [HttpPost("refresh")]
     [AllowAnonymous]
     [ServiceFilter(typeof(ValidationActionFilter<RefreshModel>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccessModel))]
     public async Task<IActionResult> Refresh([FromBody] RefreshModel model, CancellationToken token = new())
     {
         return Ok(await _accountService.Refresh(model, token));
