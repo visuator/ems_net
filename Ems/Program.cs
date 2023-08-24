@@ -151,6 +151,7 @@ builder.Services.Configure<SwaggerOptions>(builder.Configuration.GetSection(name
 builder.Services.AddMemoryCache();
 builder.Services.AddEFSecondLevelCache(opt =>
 {
+    opt.CacheAllQueries(CacheExpirationMode.Sliding, TimeSpan.FromMinutes(1));
     opt.UseMemoryCacheProvider();
 });
 builder.Services.AddDbContext<EmsDbContext>((provider, opt) =>
@@ -183,6 +184,8 @@ builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IStudentRecordSessionService, StudentRecordSessionService>();
 builder.Services.AddScoped<IStudentRecordService, StudentRecordService>();
 builder.Services.AddScoped(typeof(ValidatorResolverService<>));
+
+builder.Services.AddSingleton<ResponseTimeMiddleware>();
 
 builder.Services.AddScoped<IScheduleService<PublishClassVersionJob>, PublishClassVersionJobQuartzScheduleService>();
 builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJobQuartzScheduleService>();
@@ -220,6 +223,9 @@ if (app.Environment.IsDevelopment())
                 });
         });
     });
+
+    app.UseMiddleware<ResponseTimeMiddleware>();
+    
     app.UseSwagger();
     app.UseSwaggerUI(opt =>
     {

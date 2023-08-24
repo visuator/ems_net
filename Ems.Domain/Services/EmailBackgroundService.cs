@@ -1,4 +1,5 @@
-﻿using Ems.Core.Entities;
+﻿using EFCoreSecondLevelCacheInterceptor;
+using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Infrastructure.Exceptions;
 using Ems.Infrastructure.Options;
@@ -36,7 +37,7 @@ public class EmailBackgroundService : BackgroundService
 
             var retryPolicy = Policy.Handle<EmailSenderException>().RetryAsync(emailSenderOptions.RetryingCount);
 
-            var emails = await dbContext.Emails.AsTracking().Where(x => x.Status == EmailStatus.Created)
+            var emails = await dbContext.Emails.Cacheable(CacheExpirationMode.Sliding, TimeSpan.FromSeconds(15)).AsTracking().Where(x => x.Status == EmailStatus.Created)
                 .ToListAsync(token);
             foreach (var email in emails)
             {
