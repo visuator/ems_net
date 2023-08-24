@@ -34,7 +34,6 @@
 <div id="swagger-ui"></div>
 <script>
     if (window.navigator.userAgent.indexOf("Edge") > -1) {
-        console.log("Removing native Edge fetch in favor of swagger-ui's polyfill")
         window.fetch = undefined;
     }
 </script>
@@ -66,10 +65,10 @@
         configObject.dom_id = "#swagger-ui";
 
         configObject.requestInterceptor = (request) => {
-            accessTokenInjector(request);
+            return accessTokenInjector(request);
         };
         configObject.responseInterceptor = (response) => {
-            loginEndpointCatcher(response);
+            return loginEndpointCatcher(response);
         };
 
         configObject.presets = [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset];
@@ -78,7 +77,7 @@
             HideCurlPlugin,
             AuthState,
         ];
-
+        
         // Begin Swagger UI call region
 
         const ui = SwaggerUIBundle(configObject);
@@ -102,30 +101,16 @@
         return {
             statePlugins: {
                 authInterceptors: {
-                    actions: {
-                        setToken: (model) => {
-                            return {
-                                type: "AUTH_INTERCEPTORS_SET_TOKEN",
-                                payload: model
-                            }
-                        }
-                    },
-                    reducers: {
-                        "AUTH_INTERCEPTORS_SET_TOKEN": (state, action) => {
-                            return state.set("currentToken", action.payload.value);
-                        }
-                    },
                     selectors: {
-                        currentToken: (state) => state.get("currentToken")
+                        currentToken: (state) => system.authSelectors.authorized().getIn(['Bearer', 'value'])
                     }
                 }
             },
             wrapComponents: {
                 apiKeyAuth: (Original, system) => (props) => {
                     return <Original {...props} onChange={e => {
-                        const eventWrap = e.name === "Bearer" ? { name: e.name, schema: e.schema, value: `Bearer ${e.value}` } : e; 
+                        const eventWrap = e.name === "Bearer" ? { name: e.name, schema: e.schema, value: e.value ? `Bearer ${e.value}` : '' } : e; 
                         props.onChange(eventWrap);
-                        system.authInterceptorsActions.setToken(eventWrap);
                     }}/>
                 }
             },
@@ -141,10 +126,11 @@
         if (!window.authStorage) {
             window.authStorage = {instance: {accessToken: null, refreshToken: null, expiresAt: null}}
         }
-        if (response.url.endsWith('api/v1/login') && response.ok) {
+        if (response.url.endsWith('api/v1/auth/login') && response.ok) {
             const left = response.body;
             const right = authStorage.instance;
             authStorage.instance = Object.assign(right, left);
+            console.log(left);
             return response;
         }
     };
@@ -152,7 +138,7 @@
         if (window.ui && window.ui.currentToken()) return;
         if (window.authStorage && window.authStorage.instance) {
             if (Date.now() >= new Date(window.authStorage.instance.expiresAt).getTime() && window.authStorage.instance.refreshToken) {
-                fetch(`${window.location.origin}/api/v1/refresh`, {
+                fetch(`${window.location.origin}/api/v1/auth/refresh`, {
                     method: 'POST',
                     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
                     body: JSON.stringify({

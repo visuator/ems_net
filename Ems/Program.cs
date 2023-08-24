@@ -153,9 +153,9 @@ builder.Services.AddEFSecondLevelCache(opt =>
 {
     opt.UseMemoryCacheProvider();
 });
-builder.Services.AddDbContext<EmsDbContext>(opt =>
+builder.Services.AddDbContext<EmsDbContext>((provider, opt) =>
 {
-    opt.AddInterceptors(new EntityInterceptor());
+    opt.AddInterceptors(new EntityInterceptor(), provider.GetRequiredService<SecondLevelCacheInterceptor>());
     opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     var dbConnection = builder.Configuration.GetConnectionString(Connections.Db);
     opt.UseNpgsql(dbConnection, npgsqlOpt => { npgsqlOpt.MigrationsAssembly(Assemblies.Infrastructure); });
