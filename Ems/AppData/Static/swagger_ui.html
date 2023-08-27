@@ -159,19 +159,25 @@
 
         return response;
     };
-    const accessTokenInjector = (request) => {
+    const accessTokenInjector = async (request) => {
         if (window.ui && window.ui.currentToken()) return;
         if (window.authStorage && window.authStorage.instance) {
             if (Date.now() >= new Date(window.authStorage.instance.expiresAt).getTime() && window.authStorage.instance.refreshToken) {
-                fetch(`${window.location.origin}/api/v1/auth/refresh`, {
+                await fetch(`${window.location.origin}/api/v1/auth/refresh`, {
                     method: 'POST',
                     headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         refreshToken: authStorage.instance.refreshToken,
                         requestedAt: new Date(Date.now()).toJSON()
                     })
-                }).then(async (r) => {
-                    window.authStorage.instance = JSON.parse(await r.json());
+                }).then(async (r) => {  
+                    window.authStorage.instance = await r.json() ?? {
+                        instance: {
+                            accessToken: null,
+                            refreshToken: null,
+                            expiresAt: null
+                        }
+                    };
                 });
             }
             request.headers.Authorization = `Bearer ${window.authStorage.instance.accessToken}`

@@ -4,6 +4,8 @@ using AutoMapper.QueryableExtensions;
 using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
+using Ems.Domain.Constants;
+using Ems.Domain.Extensions;
 using Ems.Domain.Models;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
@@ -23,14 +25,16 @@ public class AccountService : IAccountService
     private readonly IJwtService _jwtService;
     private readonly IMapper _mapper;
     private readonly IPasswordProvider _passwordProvider;
+    private readonly IAuthStorage _authStorage;
 
     public AccountService(EmsDbContext dbContext, IJwtService jwtService, IOptions<AccountOptions> accountOptions,
-        IPasswordProvider passwordProvider, IMapper mapper)
+        IPasswordProvider passwordProvider, IMapper mapper, IAuthStorage authStorage)
     {
         _dbContext = dbContext;
         _jwtService = jwtService;
         _passwordProvider = passwordProvider;
         _mapper = mapper;
+        _authStorage = authStorage;
         _accountOptions = accountOptions.Value;
     }
 
@@ -263,7 +267,9 @@ public class AccountService : IAccountService
 
     public async Task<List<AccountDto>> GetAll(ODataQueryOptions<AccountDto> query, CancellationToken token = new())
     {
-        return await _dbContext.Accounts.GetQuery(_mapper, query).ToListAsync(token);
+        if (_authStorage.CurrentRoles is null)
+            throw new UnauthorizedAccessException(ErrorMessages.Auth.UnauthorizedMethodAccess);
+        return await _dbContext.Accounts.GetQuery(_mapper, query).ODataMapFromRoles(_authStorage.CurrentRoles).ToListAsync(token);
     }
 
     public async Task<AccountDto> GetAuthenticated(GetAuthenticatedModel model, CancellationToken token = new())

@@ -3,6 +3,7 @@ using AutoMapper.AspNet.OData;
 using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
+using Ems.Domain.Extensions;
 using Ems.Domain.Jobs;
 using Ems.Domain.Models;
 using Ems.Infrastructure.Services;
@@ -19,13 +20,15 @@ public class ClassVersionService : IClassVersionService
     private readonly EmsDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IScheduleService<PublishClassVersionJob> _publishClassVersionScheduleService;
+    private readonly IAuthStorage _authStorage;
 
     public ClassVersionService(EmsDbContext dbContext,
-        IScheduleService<PublishClassVersionJob> publishClassVersionScheduleService, IMapper mapper)
+        IScheduleService<PublishClassVersionJob> publishClassVersionScheduleService, IMapper mapper, IAuthStorage authStorage)
     {
         _dbContext = dbContext;
         _publishClassVersionScheduleService = publishClassVersionScheduleService;
         _mapper = mapper;
+        _authStorage = authStorage;
     }
 
     public async Task Import(ExcelClassVersionModel model, CancellationToken token = new())
@@ -72,6 +75,6 @@ public class ClassVersionService : IClassVersionService
     public async Task<List<ClassVersionDto>> GetAll(ODataQueryOptions<ClassVersionDto> query,
         CancellationToken token = new())
     {
-        return await _dbContext.ClassVersions.GetQuery(_mapper, query).ToListAsync(token);
+        return await _dbContext.ClassVersions.GetQuery(_mapper, query).ODataMapFromRoles(_authStorage.CurrentRoles).ToListAsync(token);
     }
 }

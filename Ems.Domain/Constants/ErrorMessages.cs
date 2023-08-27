@@ -2,6 +2,10 @@
 
 public static class ErrorMessages
 {
+    public static class Auth
+    {
+        public const string UnauthorizedMethodAccess = "UNAUTHORIZED_METHOD_ACCESS";
+    }
     public static class Swagger
     {
         public const string NoLoginEndpoint = "NO_LOGIN_ENDPOINT";

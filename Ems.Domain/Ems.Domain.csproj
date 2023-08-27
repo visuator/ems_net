@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper.AspNetCore.OData.EFCore" Version="4.0.0" />
+        <PackageReference Include="AutoMapper.AspNetCore.OData.EFCore" Version="4.0.0"/>
         <PackageReference Include="EFCoreSecondLevelCacheInterceptor" Version="3.9.2" />
         <PackageReference Include="ExcelDataReader" Version="3.6.0" />
         <PackageReference Include="FluentValidation" Version="11.6.0" />

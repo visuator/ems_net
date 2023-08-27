@@ -16,6 +16,7 @@ public class AuthenticatedActionFilter : IAsyncActionFilter
             return;
         }
 
+        //TODO: Extension
         var accountClaim = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid);
         if (accountClaim is not null)
         {

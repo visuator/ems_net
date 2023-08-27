@@ -44,6 +44,7 @@ builder.Services.AddVersionedApiExplorer(opt =>
     opt.DefaultApiVersion = new ApiVersion(1, 0);
 });
 
+builder.Services.AddSingleton<AuthenticationFilter>();
 builder.Services.AddScoped<CurrentClassBindingActionFilter>();
 builder.Services.AddScoped(typeof(ValidationActionFilter<>));
 builder.Services.Configure<ApiBehaviorOptions>(opt => { opt.SuppressInferBindingSourcesForParameters = true; });
@@ -52,6 +53,7 @@ builder.Services.AddControllers(x =>
     if (builder.Environment.IsDevelopment())
         x.Filters.Add<RequestTimeStampActionFilter>();
     x.Filters.AddService<CurrentClassBindingActionFilter>();
+    x.Filters.AddService<AuthenticationFilter>();
 }).AddJsonOptions(
     opt =>
     {
@@ -183,6 +185,7 @@ builder.Services.AddScoped<IExternalAccountService, ExternalAccountService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IStudentRecordSessionService, StudentRecordSessionService>();
 builder.Services.AddScoped<IStudentRecordService, StudentRecordService>();
+builder.Services.AddSingleton<IAuthStorage, AuthStorage>();
 builder.Services.AddScoped(typeof(ValidatorResolverService<>));
 
 builder.Services.AddSingleton<ResponseTimeMiddleware>();

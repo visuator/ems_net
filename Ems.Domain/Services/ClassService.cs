@@ -81,7 +81,7 @@ public class ClassService : IClassService
     {
         var accountRoles = await _dbContext.AccountRoles.Where(x => x.AccountId == accountId).Select(x => x.Role)
             .ToListAsync(token);
-        return await _dbContext.Classes.ResolveByAccountRoles(accountRoles, accountId)
+        return await _dbContext.Classes.ResolveByAccountRoles(accountId, accountRoles)
             .Where(x => requestedAt >= x.StartingAt && requestedAt <= x.EndingAt)
             .SingleOrDefaultAsync(token);
     }
