@@ -3,6 +3,7 @@ using Ems.Domain.Models;
 using Ems.Domain.Services;
 using Ems.Interceptors;
 using Ems.Services;
+using Ems.Services.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,21 +16,16 @@ namespace Ems.Controllers;
 public class OAuthController : ControllerBase
 {
     private readonly IAccountService _accountService;
-    private readonly ValidatorResolverService<AddExternalAccountModel> _addExternalAccountModelValidator;
     private readonly IExternalAccountService _externalAccountService;
     private readonly IMapper _mapper;
-    private readonly ValidatorResolverService<OAuthLoginModel> _oauthLoginModelValidator;
+    private readonly IValidatorResolverService _validatorResolverService;
 
-    public OAuthController(IAccountService accountService, IMapper mapper,
-        ValidatorResolverService<AddExternalAccountModel> addExternalAccountModelValidator,
-        ValidatorResolverService<OAuthLoginModel> oauthLoginModelValidator,
-        IExternalAccountService externalAccountService)
+    public OAuthController(IAccountService accountService, IExternalAccountService externalAccountService, IMapper mapper, IValidatorResolverService validatorResolverService)
     {
         _accountService = accountService;
-        _mapper = mapper;
-        _addExternalAccountModelValidator = addExternalAccountModelValidator;
-        _oauthLoginModelValidator = oauthLoginModelValidator;
         _externalAccountService = externalAccountService;
+        _mapper = mapper;
+        _validatorResolverService = validatorResolverService;
     }
 
     [HttpPost("google")]
@@ -39,8 +35,9 @@ public class OAuthController : ControllerBase
         CancellationToken token = new())
     {
         var model = _mapper.Map<OAuthLoginModel>(googleOAuthModel);
-        return await _oauthLoginModelValidator.ForModel(model).HasModelStateFallback(ModelState)
-            .OnSuccess(async (innerToken, innerModel) => await _accountService.Login(innerModel, innerToken))
+        return await _validatorResolverService.ForModel(model)
+            .WithModelState(ModelState)
+            .WithAsyncCallback(async (m, t) => await _accountService.Login(m, t))
             .Execute(token);
     }
 
@@ -52,9 +49,9 @@ public class OAuthController : ControllerBase
         CancellationToken token = new())
     {
         var model = _mapper.Map<AddExternalAccountModel>(googleOAuthModel);
-        return await _addExternalAccountModelValidator.ForModel(model).HasModelStateFallback(ModelState)
-            .OnSuccess(async (innerToken, innerModel) =>
-                await _externalAccountService.AddExternalAccount(innerModel, innerToken))
+        return await _validatorResolverService.ForModel(model)
+            .WithModelState(ModelState)
+            .WithAsyncCallback(async (m, t) => await _externalAccountService.AddExternalAccount(m, t))
             .Execute(token);
     }
 }

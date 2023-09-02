@@ -1,4 +1,5 @@
-﻿using Ems.Core.Entities;
+﻿using System.Text.Json.Serialization;
+using Ems.Core.Entities;
 using Ems.Domain.Constants;
 using Ems.Domain.Services;
 using Ems.Models;
@@ -10,7 +11,9 @@ public class CreateGeolocationStudentRecordSessionModel : IRequestTimeStamp, IAu
 {
     public double Longitude { get; set; }
     public double Latitude { get; set; }
+    [JsonIgnore]
     public Guid AccountId { get; set; }
+    [JsonIgnore]
     public Class? CurrentClass { get; set; }
     public DateTime RequestedAt { get; set; }
 

@@ -22,7 +22,7 @@ public class StudentRecordSessionController : ControllerBase
 
     [HttpPost("gps")]
     [ServiceFilter(typeof(ValidationActionFilter<CreateGeolocationStudentRecordSessionModel>))]
-    public async Task<IActionResult> Create(CreateGeolocationStudentRecordSessionModel model,
+    public async Task<IActionResult> Create([FromBody] CreateGeolocationStudentRecordSessionModel model,
         CancellationToken token = new())
     {
         await _studentRecordSessionService.Create(model, token);
@@ -31,7 +31,7 @@ public class StudentRecordSessionController : ControllerBase
 
     [HttpPost("qr")]
     [ServiceFilter(typeof(ValidationActionFilter<CreateQrCodeStudentRecordSessionModel>))]
-    public async Task<IActionResult> Create(CreateQrCodeStudentRecordSessionModel sessionModel,
+    public async Task<IActionResult> Create([FromBody] CreateQrCodeStudentRecordSessionModel sessionModel,
         CancellationToken token = new())
     {
         await _studentRecordSessionService.Create(sessionModel, token);

@@ -104,7 +104,7 @@
                 authInterceptors: {
                     selectors: {
                         currentToken: (state) => system.authSelectors.authorized().getIn(['Bearer', 'value']),
-                        responseElapsedTime: (state) => state.get("responseElapsedTime"),
+                        responseElapsedTime: (state, url) => state.get("responses").find(r => r.url === url).elapsedTime,
                     },
                     actions: {
                         setResponseElapsedTime: (time) => {
@@ -113,7 +113,15 @@
                     },
                     reducers: {
                         "SET_RESPONSE_ELAPSED_TIME": (state, action) => {
-                            return state.set("responseElapsedTime", action.payload);
+                            const responses = state.get("responses") || [];
+                            console.log(responses);
+                            const index = responses.findIndex(i => i.url === action.payload.url);
+                            if (index > -1) {
+                                responses[index] = action.payload;
+                            } else {
+                                responses.push(action.payload);
+                            }
+                            return state.set("responses", responses);
                         }
                     }
                 }
@@ -131,7 +139,8 @@
                 },
                 liveResponse: (Original, system) => (props) => {
                     return <div>
-                        <h3>Elapsed milliseconds: {system.authInterceptorsSelectors.responseElapsedTime()}</h3>
+                        <h3>Elapsed
+                            milliseconds: {system.authInterceptorsSelectors.responseElapsedTime(props.response.get("url")) || '&mdash;'}</h3>
                         <Original {...props}/>
                     </div>
                 },
@@ -154,7 +163,10 @@
             authStorage.instance = Object.assign(right, left);
         }
         if (window.ui) {
-            window.ui.authInterceptorsActions.setResponseElapsedTime(response.headers['x-response-time']);
+            window.ui.authInterceptorsActions.setResponseElapsedTime({
+                url: response.url,
+                elapsedTime: response.headers['x-response-time']
+            });
         }
 
         return response;
@@ -170,7 +182,7 @@
                         refreshToken: authStorage.instance.refreshToken,
                         requestedAt: new Date(Date.now()).toJSON()
                     })
-                }).then(async (r) => {  
+                }).then(async (r) => {
                     window.authStorage.instance = await r.json() ?? {
                         instance: {
                             accessToken: null,

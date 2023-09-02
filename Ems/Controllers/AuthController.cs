@@ -3,6 +3,7 @@ using Ems.Domain.Services;
 using Ems.Interceptors;
 using Ems.Models;
 using Ems.Services;
+using Ems.Services.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,19 +16,14 @@ namespace Ems.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAccountService _accountService;
-    private readonly ValidatorResolverService<DeleteExternalAccountModel> _deleteExternalAccountModelValidator;
     private readonly IExternalAccountService _externalAccountService;
-    private readonly ValidatorResolverService<RevokeSessionModel> _revokeSessionModelValidator;
+    private readonly IValidatorResolverService _validatorResolverService;
 
-    public AuthController(IAccountService accountService,
-        ValidatorResolverService<DeleteExternalAccountModel> deleteExternalAccountModelValidator,
-        IExternalAccountService externalAccountService,
-        ValidatorResolverService<RevokeSessionModel> revokeSessionModelValidator)
+    public AuthController(IAccountService accountService, IExternalAccountService externalAccountService, IValidatorResolverService validatorResolverService)
     {
         _accountService = accountService;
-        _deleteExternalAccountModelValidator = deleteExternalAccountModelValidator;
         _externalAccountService = externalAccountService;
-        _revokeSessionModelValidator = revokeSessionModelValidator;
+        _validatorResolverService = validatorResolverService;
     }
 
     [HttpPost("login")]
@@ -70,8 +66,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> RevokeSession([FromRoute] Guid accountId, CancellationToken token = new())
     {
         var model = new RevokeSessionModel { AccountId = accountId };
-        return await _revokeSessionModelValidator.ForModel(model).HasModelStateFallback(ModelState)
-            .OnSuccess(async (innerToken, innerModel) => await _accountService.RevokeSession(innerModel, innerToken))
+        return await _validatorResolverService.ForModel(model)
+            .WithModelState(ModelState)
+            .WithAsyncCallback(async (m, t) => await _accountService.RevokeSession(m, t))
             .Execute(token);
     }
 
@@ -98,9 +95,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> DeleteExternalAccount([FromRoute] Guid id, CancellationToken token = new())
     {
         var model = new DeleteExternalAccountModel { Id = id };
-        return await _deleteExternalAccountModelValidator.ForModel(model).HasModelStateFallback(ModelState)
-            .OnSuccess(async (innerToken, innerModel) =>
-                await _externalAccountService.DeleteExternalAccount(innerModel, innerToken))
+        return await _validatorResolverService.ForModel(model)
+            .WithModelState(ModelState)
+            .WithAsyncCallback(async (m, t) => await _externalAccountService.DeleteExternalAccount(m, t))
             .Execute(token);
     }
 }

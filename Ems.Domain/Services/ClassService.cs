@@ -62,7 +62,7 @@ public class ClassService : IClassService
             .Where(x => !idlePeriods.Any(ip => x.StartingAt >= ip.StartingAt && x.EndingAt <= ip.EndingAt))
             .Select(x =>
             {
-                if (x.StartingAt >= model.RequestedAt && model.RequestedAt <= x.EndingAt)
+                if (model.RequestedAt >= x.StartingAt!.Value && model.RequestedAt <= x.EndingAt!.Value)
                     x.Status = GroupClassStatus.Current;
                 else if (x.StartingAt >= model.RequestedAt)
                     x.Status = GroupClassStatus.Next;
@@ -81,8 +81,8 @@ public class ClassService : IClassService
     {
         var accountRoles = await _dbContext.AccountRoles.Where(x => x.AccountId == accountId).Select(x => x.Role)
             .ToListAsync(token);
-        return await _dbContext.Classes.ResolveByAccountRoles(accountId, accountRoles)
-            .Where(x => requestedAt >= x.StartingAt && requestedAt <= x.EndingAt)
+        return await _dbContext.Classes.Where(x => requestedAt >= x.StartingAt && requestedAt <= x.EndingAt)
+            .ResolveByAccountRoles(accountId, accountRoles)
             .SingleOrDefaultAsync(token);
     }
 }

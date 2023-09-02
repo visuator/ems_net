@@ -2,6 +2,7 @@
 using Ems.Domain.Services;
 using Ems.Models;
 using Ems.Services;
+using Ems.Services.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,16 +16,12 @@ namespace Ems.Controllers;
 public class ClassController : ControllerBase
 {
     private readonly IClassService _classService;
-    private readonly ValidatorResolverService<CreateReplacementModel> _createReplacementModelValidator;
-    private readonly ValidatorResolverService<GetGroupCurrentModel> _getGroupCurrentModelValidator;
+    private readonly IValidatorResolverService _validatorResolverService;
 
-    public ClassController(IClassService classService,
-        ValidatorResolverService<CreateReplacementModel> createReplacementModelValidator,
-        ValidatorResolverService<GetGroupCurrentModel> getGroupCurrentModelValidator)
+    public ClassController(IClassService classService, IValidatorResolverService validatorResolverService)
     {
         _classService = classService;
-        _createReplacementModelValidator = createReplacementModelValidator;
-        _getGroupCurrentModelValidator = getGroupCurrentModelValidator;
+        _validatorResolverService = validatorResolverService;
     }
 
     [HttpPost("{id:guid}/replace")]
@@ -32,8 +29,9 @@ public class ClassController : ControllerBase
         CancellationToken token = new())
     {
         model.SourceClassId = id;
-        return await _createReplacementModelValidator.ForModel(model).HasModelStateFallback(ModelState)
-            .OnSuccess(async (innerToken, innerModel) => await _classService.CreateReplacement(innerModel, innerToken))
+        return await _validatorResolverService.ForModel(model)
+            .WithModelState(ModelState)
+            .WithAsyncCallback(async (m, t) => await _classService.CreateReplacement(m, t))
             .Execute(token);
     }
 
@@ -42,8 +40,9 @@ public class ClassController : ControllerBase
         CancellationToken token = new())
     {
         var model = new GetGroupCurrentModel { GroupId = groupId, RequestedAt = requestedAt };
-        return await _getGroupCurrentModelValidator.ForModel(model).HasModelStateFallback(ModelState)
-            .OnSuccess(async (innerToken, innerModel) => await _classService.GetGroupCurrent(innerModel, innerToken))
-            .Execute<List<GroupClassInfoModel>>(token);
+        return await _validatorResolverService.ForModel(model)
+            .WithModelState(ModelState)
+            .WithAsyncCallback(async (m, t) => await _classService.GetGroupCurrent(m, t))
+            .Execute(token);
     }
 }

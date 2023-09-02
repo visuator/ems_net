@@ -15,8 +15,8 @@ public class CurrentClassBindingActionFilter : IAsyncActionFilter
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        if (!context.ActionArguments.Values.Where(x => x is IAuthenticated).Where(x => x is IRequestTimeStamp)
-                .Where(x => x is ICurrentClassBinding).Any())
+        if (!context.ActionArguments.Values.Where(x => x is IAuthenticated)
+                .Where(x => x is IRequestTimeStamp).Any(x => x is ICurrentClassBinding))
         {
             await next();
             return;

@@ -14,6 +14,7 @@ using Ems.Interceptors;
 using Ems.Models;
 using Ems.Services;
 using Ems.Services.Hooks;
+using Ems.Services.Validation;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
@@ -91,6 +92,7 @@ builder.Services.AddSwaggerGen(opt =>
     });
     
     opt.OperationFilter<SwaggerODataFilter>();
+    opt.OperationFilter<SwaggerJsonIgnoreFilter>();
 });
 
 builder.Services.AddOptions();
@@ -186,7 +188,7 @@ builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IStudentRecordSessionService, StudentRecordSessionService>();
 builder.Services.AddScoped<IStudentRecordService, StudentRecordService>();
 builder.Services.AddSingleton<IAuthStorage, AuthStorage>();
-builder.Services.AddScoped(typeof(ValidatorResolverService<>));
+builder.Services.AddScoped<IValidatorResolverService, ValidatorResolverService>();
 
 builder.Services.AddSingleton<ResponseTimeMiddleware>();
 

@@ -1,4 +1,5 @@
-﻿using Ems.Domain.Constants;
+﻿using System.Text.Json.Serialization;
+using Ems.Domain.Constants;
 using Ems.Domain.Services;
 using Ems.Models;
 using FluentValidation;
@@ -11,6 +12,7 @@ public class CreateGeolocationStudentRecordModel : IAuthenticated
     public double Latitude { get; set; }
     public Guid ClassId { get; set; }
     public Guid SessionId { get; set; }
+    [JsonIgnore]
     public Guid AccountId { get; set; }
 
     public class Validator : AbstractValidator<CreateGeolocationStudentRecordModel>
