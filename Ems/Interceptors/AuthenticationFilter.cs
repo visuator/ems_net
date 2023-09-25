@@ -16,9 +16,8 @@ public class AuthenticationFilter : IAsyncAuthorizationFilter
 
     public Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        //TODO: Extension
         var roles = context.HttpContext.User.Claims.Where(x => x.Type == ClaimTypes.Role)
-            .Select(x => Enum.Parse<Role>(x.Value)).ToList();
+            .Select(x => Enum.Parse<Role>(x.Value, true)).ToList();
         _authStorage.CurrentRoles = roles;
         return Task.CompletedTask;
     }

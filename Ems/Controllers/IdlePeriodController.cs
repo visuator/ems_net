@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
-// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -24,6 +23,7 @@ public class IdlePeriodController : ControllerBase
 
     [HttpPost]
     [ServiceFilter(typeof(ValidationActionFilter<CreateIdlePeriodModel>))]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> CreateIdlePeriod([FromBody] CreateIdlePeriodModel model,
         CancellationToken token = new())
     {
@@ -32,6 +32,7 @@ public class IdlePeriodController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetAll(ODataQueryOptions<IdlePeriodDto> query, CancellationToken token = new())
     {
         return Ok(await _idlePeriodService.GetAll(query, token));

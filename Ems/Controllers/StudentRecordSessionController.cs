@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ems.Controllers;
 
-// сделать роль только для преподавателя
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -20,6 +19,7 @@ public class StudentRecordSessionController : ControllerBase
         _studentRecordSessionService = studentRecordSessionService;
     }
 
+    [Authorize(Roles = "lecturer")]
     [HttpPost("gps")]
     [ServiceFilter(typeof(ValidationActionFilter<CreateGeolocationStudentRecordSessionModel>))]
     public async Task<IActionResult> Create([FromBody] CreateGeolocationStudentRecordSessionModel model,
@@ -29,6 +29,7 @@ public class StudentRecordSessionController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "lecturer")]
     [HttpPost("qr")]
     [ServiceFilter(typeof(ValidationActionFilter<CreateQrCodeStudentRecordSessionModel>))]
     public async Task<IActionResult> Create([FromBody] CreateQrCodeStudentRecordSessionModel sessionModel,

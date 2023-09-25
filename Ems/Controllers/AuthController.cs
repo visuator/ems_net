@@ -63,6 +63,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("{accountId:guid}/revokeSession")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> RevokeSession([FromRoute] Guid accountId, CancellationToken token = new())
     {
         var model = new RevokeSessionModel { AccountId = accountId };
@@ -91,6 +92,7 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin,student,lecturer")]
     [HttpDelete("external/{id:guid}")]
     public async Task<IActionResult> DeleteExternalAccount([FromRoute] Guid id, CancellationToken token = new())
     {

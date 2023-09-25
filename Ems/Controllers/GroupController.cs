@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
-// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -21,6 +20,7 @@ public class GroupController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetAll(ODataQueryOptions<GroupDto> query, CancellationToken token = new())
     {
         return Ok(await _groupService.GetAll(query, token));

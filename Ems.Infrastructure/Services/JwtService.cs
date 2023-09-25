@@ -24,7 +24,7 @@ public class JwtService : IJwtService
         {
             new(ClaimTypes.Sid, account.Id.ToString())
         };
-        claims.AddRange(account.Roles.Select(x => new Claim(ClaimTypes.Role, ((int)x.Role).ToString())));
+        claims.AddRange(account.Roles.Select(x => new Claim(ClaimTypes.Role, x.Role.ToString().ToLower())));
         var now = DateTime.UtcNow;
         var expiresAt = now.Add(_jwtOptions.ExpirationTime);
 

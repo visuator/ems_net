@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
-// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -22,6 +21,7 @@ public class SettingController : ControllerBase
         _settingService = settingService;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     [ServiceFilter(typeof(ValidationActionFilter<CreateSettingModel>))]
     public async Task<IActionResult> Create([FromBody] CreateSettingModel model, CancellationToken token = new())
@@ -30,13 +30,14 @@ public class SettingController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpGet]
     public async Task<IActionResult> GetAll(ODataQueryOptions<SettingDto> query, CancellationToken token = new())
     {
         return Ok(await _settingService.GetAll(query, token));
     }
-
-    // роль студента, админа, преподавателя
+    
+    [Authorize(Roles = "admin")]
     [HttpGet("qrCodeStudentRecordSessionOptions")]
     public async Task<IActionResult> GetQrCodeStudentRecordSessionOptions(CancellationToken token = new())
     {

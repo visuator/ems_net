@@ -1,11 +1,12 @@
 ﻿using Ems.Domain.Models;
 using Ems.Domain.Services;
 using Ems.Interceptors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ems.Controllers;
 
-// роль студента
+[Authorize]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/studentRecords")]
@@ -18,6 +19,7 @@ public class StudentRecordController : ControllerBase
         _studentRecordService = studentRecordService;
     }
 
+    [Authorize(Roles = "student")]
     [HttpPost("geo")]
     [ServiceFilter(typeof(ValidationActionFilter<CreateGeolocationStudentRecordModel>))]
     public async Task<IActionResult> Create([FromBody] CreateGeolocationStudentRecordModel model,
@@ -27,6 +29,7 @@ public class StudentRecordController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "student")]
     [HttpPost("qr")]
     public async Task<IActionResult> Update([FromBody] UpdateQrCodeStudentRecordStatusModel model,
         CancellationToken token = new())

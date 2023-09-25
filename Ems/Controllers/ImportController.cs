@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ems.Controllers;
 
-// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -20,6 +19,7 @@ public class ImportController : ControllerBase
         _importServiceProvider = importServiceProvider;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("classPeriods")]
     public async Task<IActionResult> ImportClassPeriods(IFormFile file, CancellationToken token = new())
     {
@@ -30,6 +30,7 @@ public class ImportController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("classrooms")]
     public async Task<IActionResult> ImportClassrooms(IFormFile file, CancellationToken token = new())
     {
@@ -40,6 +41,7 @@ public class ImportController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("classVersion")]
     public async Task<IActionResult> ImportClassVersion(IFormFile file, CancellationToken token = new())
     {
@@ -50,6 +52,7 @@ public class ImportController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("groups")]
     public async Task<IActionResult> ImportGroups(IFormFile file, CancellationToken token = new())
     {
@@ -60,6 +63,7 @@ public class ImportController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("lecturers")]
     public async Task<IActionResult> ImportLecturers(IFormFile file, [FromQuery] DateTime requestedAt,
         CancellationToken token = new())
@@ -71,6 +75,7 @@ public class ImportController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("lessons")]
     public async Task<IActionResult> ImportLessons(IFormFile file, CancellationToken token = new())
     {
@@ -81,6 +86,7 @@ public class ImportController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("students")]
     public async Task<IActionResult> ImportStudents(IFormFile file, [FromQuery] DateTime requestedAt,
         CancellationToken token = new())

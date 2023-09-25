@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
-// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -23,22 +22,24 @@ public class AccountController : ControllerBase
         _accountService = accountService;
         _externalAccountService = externalAccountService;
     }
-
-    // роль для админа, студента, преподавателя
+    
     [HttpGet("authenticated")]
     [TypeFilter(typeof(AuthenticatedActionFilter))]
+    [Authorize(Roles = "admin,student,lecturer")]
     public async Task<IActionResult> GetAuthenticated([FromQuery] GetAuthenticatedModel model)
     {
         return Ok(await _accountService.GetAuthenticated(model));
     }
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetAll(ODataQueryOptions<AccountDto> query, CancellationToken token = new())
     {
         return Ok(await _accountService.GetAll(query, token));
     }
 
     [HttpGet("external")]
+    [Authorize(Roles = "admin,student,lecturer")]
     public async Task<IActionResult> GetAll(ODataQueryOptions<ExternalAccountDto> query,
         CancellationToken token = new())
     {

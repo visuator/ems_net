@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
-// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -24,6 +23,7 @@ public class ClassVersionController : ControllerBase
 
     [HttpPost("publish")]
     [ServiceFilter(typeof(ValidationActionFilter<PublishClassVersionModel>))]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Publish([FromBody] PublishClassVersionModel model, CancellationToken token = new())
     {
         await _classVersionService.Publish(model, token);
@@ -31,6 +31,7 @@ public class ClassVersionController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> GetAll(ODataQueryOptions<ClassVersionDto> query)
     {
         return Ok(await _classVersionService.GetAll(query));

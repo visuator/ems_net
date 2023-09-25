@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ems.Controllers;
 
-// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -22,6 +21,7 @@ public class ClassController : ControllerBase
         _validatorResolverService = validatorResolverService;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("{id:guid}/replace")]
     public async Task<IActionResult> CreateReplacement([FromRoute] Guid id, [FromBody] CreateReplacementModel model,
         CancellationToken token = new())
@@ -33,6 +33,7 @@ public class ClassController : ControllerBase
             .Execute(token);
     }
 
+    [Authorize(Roles = "admin,student,lecturer")]
     [HttpGet("group/{groupId:guid}")]
     public async Task<IActionResult> GetGroupInfo([FromRoute] Guid groupId, [FromQuery] DateTime requestedAt,
         CancellationToken token = new())

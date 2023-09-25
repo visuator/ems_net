@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
-// роль админа
 [Authorize]
 [ApiController]
 [ApiVersion("1.0")]
@@ -20,6 +19,7 @@ public class LecturerController : ControllerBase
         _lecturerService = lecturerService;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpGet]
     public async Task<IActionResult> GetAll(ODataQueryOptions<LecturerDto> query, CancellationToken token = new())
     {
