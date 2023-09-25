@@ -6,12 +6,13 @@ namespace Ems.Services.Validation;
 
 public class ActionValidatorExecutor<T> : IValidatorExecutor<T>
 {
-    private readonly T _model;
-    private readonly IValidator<T> _validator;
-    private readonly ModelStateDictionary? _modelState;
     private readonly List<Func<T, CancellationToken, Task>> _callbacks = new();
+    private readonly T _model;
+    private readonly ModelStateDictionary? _modelState;
+    private readonly IValidator<T> _validator;
 
-    public ActionValidatorExecutor(T model, IValidator<T> validator, Func<T, CancellationToken, Task> callback, ModelStateDictionary? modelState = null)
+    public ActionValidatorExecutor(T model, IValidator<T> validator, Func<T, CancellationToken, Task> callback,
+        ModelStateDictionary? modelState = null)
     {
         _model = model;
         _validator = validator;
@@ -32,7 +33,7 @@ public class ActionValidatorExecutor<T> : IValidatorExecutor<T>
         {
             foreach (var callback in _callbacks)
                 await callback(_model, token);
-            return new OkResult();   
+            return new OkResult();
         }
 
         foreach (var error in result.Errors)

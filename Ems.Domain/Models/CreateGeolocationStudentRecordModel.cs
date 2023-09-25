@@ -12,8 +12,8 @@ public class CreateGeolocationStudentRecordModel : IAuthenticated
     public double Latitude { get; set; }
     public Guid ClassId { get; set; }
     public Guid SessionId { get; set; }
-    [JsonIgnore]
-    public Guid AccountId { get; set; }
+
+    [JsonIgnore] public Guid AccountId { get; set; }
 
     public class Validator : AbstractValidator<CreateGeolocationStudentRecordModel>
     {

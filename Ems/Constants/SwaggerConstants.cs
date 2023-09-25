@@ -4,7 +4,7 @@ namespace Ems.Constants;
 
 public static class SwaggerConstants
 {
-    public static readonly List<OpenApiParameter> Parameters = new Dictionary<string, string>()
+    public static readonly List<OpenApiParameter> Parameters = new Dictionary<string, string>
     {
         { "$top", "Максимальное количество записей" },
         { "$skip", "Количество записей, необходимое пропустить" },
@@ -17,6 +17,6 @@ public static class SwaggerConstants
         Required = false,
         Schema = new OpenApiSchema { Type = "String" },
         In = ParameterLocation.Query,
-        Description = pair.Value,
+        Description = pair.Value
     }).ToList();
 }

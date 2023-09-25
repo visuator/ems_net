@@ -37,7 +37,8 @@ public class EmailBackgroundService : BackgroundService
 
             var retryPolicy = Policy.Handle<EmailSenderException>().RetryAsync(emailSenderOptions.RetryingCount);
 
-            var emails = await dbContext.Emails.Cacheable(CacheExpirationMode.Sliding, TimeSpan.FromSeconds(15)).AsTracking().Where(x => x.Status == EmailStatus.Created)
+            var emails = await dbContext.Emails.Cacheable(CacheExpirationMode.Sliding, TimeSpan.FromSeconds(15))
+                .AsTracking().Where(x => x.Status == EmailStatus.Created)
                 .ToListAsync(token);
             foreach (var email in emails)
             {

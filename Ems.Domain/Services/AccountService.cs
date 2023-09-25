@@ -21,11 +21,11 @@ namespace Ems.Domain.Services;
 public class AccountService : IAccountService
 {
     private readonly AccountOptions _accountOptions;
+    private readonly IAuthStorage _authStorage;
     private readonly EmsDbContext _dbContext;
     private readonly IJwtService _jwtService;
     private readonly IMapper _mapper;
     private readonly IPasswordProvider _passwordProvider;
-    private readonly IAuthStorage _authStorage;
 
     public AccountService(EmsDbContext dbContext, IJwtService jwtService, IOptions<AccountOptions> accountOptions,
         IPasswordProvider passwordProvider, IMapper mapper, IAuthStorage authStorage)
@@ -82,7 +82,8 @@ public class AccountService : IAccountService
     public async Task<bool> CheckPassword(string email, string password, DateTime requestedAt,
         CancellationToken token = new())
     {
-        var dbAccount = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == email).SingleAsync(token);
+        var dbAccount = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == email)
+            .SingleAsync(token);
         var incomingHash = HashHelper.HashPassword(password, dbAccount.PasswordSalt).PasswordHash;
         var passwordEqual = incomingHash.SequenceEqual(dbAccount.PasswordHash);
         if (passwordEqual)
@@ -115,7 +116,8 @@ public class AccountService : IAccountService
 
     public async Task<bool> IsLocked(string email, DateTime requestedAt, CancellationToken token = new())
     {
-        var dbAccount = await _dbContext.Accounts.NotCacheable().Where(x => x.Email == email).Select(x => new { x.LockExpiresAt })
+        var dbAccount = await _dbContext.Accounts.NotCacheable().Where(x => x.Email == email)
+            .Select(x => new { x.LockExpiresAt })
             .SingleAsync(token);
         return dbAccount.LockExpiresAt is not null && requestedAt <= dbAccount.LockExpiresAt;
     }
@@ -148,7 +150,8 @@ public class AccountService : IAccountService
 
     public async Task Reconfirm(ReconfirmModel model, CancellationToken token = new())
     {
-        var account = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == model.Email).SingleAsync(token);
+        var account = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == model.Email)
+            .SingleAsync(token);
         var confirmationToken = HashHelper.GenerateRandomToken();
         var confirmationExpiresAt = model.RequestedAt.Add(_accountOptions.LinkExpirationTime);
 
@@ -170,7 +173,8 @@ public class AccountService : IAccountService
 
     public async Task ResetPassword(ResetPasswordModel model, CancellationToken token = new())
     {
-        var account = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == model.Email).SingleAsync(token);
+        var account = await _dbContext.Accounts.NotCacheable().AsTracking().Where(x => x.Email == model.Email)
+            .SingleAsync(token);
         var passwordResetToken = HashHelper.GenerateRandomToken();
         var passwordResetExpiresAt = model.RequestedAt.Add(_accountOptions.LinkExpirationTime);
 
@@ -227,7 +231,8 @@ public class AccountService : IAccountService
 
     public async Task<AccessModel> Login(LoginModel model, CancellationToken token = new())
     {
-        var dbAccount = await _dbContext.Accounts.NotCacheable().Include(x => x.Roles).Where(x => x.Email == model.Email)
+        var dbAccount = await _dbContext.Accounts.NotCacheable().Include(x => x.Roles)
+            .Where(x => x.Email == model.Email)
             .SingleAsync(token);
         return await LoginInner(dbAccount, token);
     }
@@ -261,7 +266,7 @@ public class AccountService : IAccountService
         {
             AccessToken = jwt.AccessToken, RefreshToken = refreshToken.Value,
             Roles = currentRefreshToken.Account.Roles.Select(x => x.Role).ToList(),
-            ExpiresAt = jwt.ExpiresAt,
+            ExpiresAt = jwt.ExpiresAt
         };
     }
 
@@ -269,7 +274,8 @@ public class AccountService : IAccountService
     {
         if (_authStorage.CurrentRoles is null)
             throw new UnauthorizedAccessException(ErrorMessages.Auth.UnauthorizedMethodAccess);
-        return await _dbContext.Accounts.GetQuery(_mapper, query).ODataMapFromRoles(_authStorage.CurrentRoles).ToListAsync(token);
+        return await _dbContext.Accounts.GetQuery(_mapper, query).ODataMapFromRoles(_authStorage.CurrentRoles)
+            .ToListAsync(token);
     }
 
     public async Task<AccountDto> GetAuthenticated(GetAuthenticatedModel model, CancellationToken token = new())

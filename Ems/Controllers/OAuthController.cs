@@ -2,7 +2,6 @@
 using Ems.Domain.Models;
 using Ems.Domain.Services;
 using Ems.Interceptors;
-using Ems.Services;
 using Ems.Services.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +19,8 @@ public class OAuthController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IValidatorResolverService _validatorResolverService;
 
-    public OAuthController(IAccountService accountService, IExternalAccountService externalAccountService, IMapper mapper, IValidatorResolverService validatorResolverService)
+    public OAuthController(IAccountService accountService, IExternalAccountService externalAccountService,
+        IMapper mapper, IValidatorResolverService validatorResolverService)
     {
         _accountService = accountService;
         _externalAccountService = externalAccountService;

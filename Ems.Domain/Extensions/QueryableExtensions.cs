@@ -1,16 +1,9 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Ems.Core.Entities;
-using Ems.Core.Entities.Abstractions;
 using Ems.Core.Entities.Enums;
 using Ems.Infrastructure.Attributes;
-using LogicBuilder.Expressions.Utils.DataSource;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using MethodCallExpression = System.Linq.Expressions.MethodCallExpression;
 
 namespace Ems.Domain.Extensions;
 
@@ -24,7 +17,7 @@ public static class QueryableExtensions
 
             if (e is MethodCallExpression mce)
             {
-                switch(mce.Method.Name)
+                switch (mce.Method.Name)
                 {
                     case "Where":
                         properties.AddRange(FindNavigationPaths(mce.Arguments[1]));
@@ -40,10 +33,7 @@ public static class QueryableExtensions
             }
             else if (e is UnaryExpression { Operand: LambdaExpression le })
             {
-                if (le.Body is MethodCallExpression mce1)
-                {
-                    properties.AddRange(FindNavigationPaths(mce1));
-                }
+                if (le.Body is MethodCallExpression mce1) properties.AddRange(FindNavigationPaths(mce1));
             }
             else if (e is LambdaExpression le1)
             {
@@ -54,7 +44,7 @@ public static class QueryableExtensions
             {
                 properties.Add(me);
             }
-            
+
             return properties;
         }
 
@@ -80,10 +70,7 @@ public static class QueryableExtensions
             }
             else if (e is UnaryExpression { Operand: LambdaExpression le })
             {
-                if (le.Body is MemberExpression me)
-                {
-                    properties.AddRange(FindNavigationPaths(me));
-                }
+                if (le.Body is MemberExpression me) properties.AddRange(FindNavigationPaths(me));
             }
             else if (e is MemberExpression { Member.MemberType: MemberTypes.Property } me)
             {
@@ -101,22 +88,20 @@ public static class QueryableExtensions
             var properties = new List<PropertyInfo>();
 
             if (e.Member.MemberType == MemberTypes.Property)
-            {
                 if (e.Member is PropertyInfo pi)
                 {
                     if (pi.PropertyType.IsClass || pi.PropertyType.GetInterfaces().Where(x => x.IsGenericType)
                             .Any(x => x.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                         properties.Add(pi);
-                    
-                    if(e.Expression is not null)
+
+                    if (e.Expression is not null)
                         if (e.Expression is MemberExpression me1)
                             properties.AddRange(TraverseMember(me1));
                 }
-            }
 
             return properties;
         }
-        
+
         List<string> GetIncludePath(MemberExpression e)
         {
             var accumulator = new List<string>();
@@ -126,7 +111,7 @@ public static class QueryableExtensions
 
             return accumulator;
         }
-        
+
         var ip = includePaths.SelectMany(TraverseMember).ToList();
         var except = navigationPaths.Where(x =>
         {
@@ -148,10 +133,8 @@ public static class QueryableExtensions
         List<Role> roles)
     {
         if (roles.Contains(Role.Student))
-        {
             return query.Where(x => x.Template!.Group!.Students.Select(s => s.Id).Contains(accountId))
                 .PathInclude();
-        }
 
         // аналогично, только тут уже Lecturer -> Account -> AccountRoles
         return roles.Contains(Role.Lecturer) ? query.Where(x => x.Lecturer.Account.Id == accountId) : query;

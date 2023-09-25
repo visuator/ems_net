@@ -17,13 +17,14 @@ namespace Ems.Domain.Services;
 
 public class ClassVersionService : IClassVersionService
 {
+    private readonly IAuthStorage _authStorage;
     private readonly EmsDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IScheduleService<PublishClassVersionJob> _publishClassVersionScheduleService;
-    private readonly IAuthStorage _authStorage;
 
     public ClassVersionService(EmsDbContext dbContext,
-        IScheduleService<PublishClassVersionJob> publishClassVersionScheduleService, IMapper mapper, IAuthStorage authStorage)
+        IScheduleService<PublishClassVersionJob> publishClassVersionScheduleService, IMapper mapper,
+        IAuthStorage authStorage)
     {
         _dbContext = dbContext;
         _publishClassVersionScheduleService = publishClassVersionScheduleService;
@@ -66,7 +67,8 @@ public class ClassVersionService : IClassVersionService
     {
         await _publishClassVersionScheduleService.ScheduleJob(_mapper.Map<PublishClassVersionJob>(model), token);
 
-        var classVersion = await _dbContext.ClassVersions.NotCacheable().AsTracking().Where(x => x.Id == model.ClassVersionId)
+        var classVersion = await _dbContext.ClassVersions.NotCacheable().AsTracking()
+            .Where(x => x.Id == model.ClassVersionId)
             .SingleAsync(token);
         classVersion.Status = ClassVersionStatus.Published;
         await _dbContext.SaveChangesAsync(token);
@@ -75,6 +77,7 @@ public class ClassVersionService : IClassVersionService
     public async Task<List<ClassVersionDto>> GetAll(ODataQueryOptions<ClassVersionDto> query,
         CancellationToken token = new())
     {
-        return await _dbContext.ClassVersions.GetQuery(_mapper, query).ODataMapFromRoles(_authStorage.CurrentRoles).ToListAsync(token);
+        return await _dbContext.ClassVersions.GetQuery(_mapper, query).ODataMapFromRoles(_authStorage.CurrentRoles)
+            .ToListAsync(token);
     }
 }

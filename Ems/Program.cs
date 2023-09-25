@@ -75,7 +75,7 @@ builder.Services.AddSwaggerGen(opt =>
         Scheme = JwtBearerDefaults.AuthenticationScheme
     });
 
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -85,12 +85,12 @@ builder.Services.AddSwaggerGen(opt =>
                     Type = ReferenceType.SecurityScheme,
                     Id = JwtBearerDefaults.AuthenticationScheme
                 },
-                In = ParameterLocation.Header,
+                In = ParameterLocation.Header
             },
             new List<string>()
         }
     });
-    
+
     opt.OperationFilter<SwaggerODataFilter>();
     opt.OperationFilter<SwaggerJsonIgnoreFilter>();
 });
@@ -230,7 +230,7 @@ if (app.Environment.IsDevelopment())
     });
 
     app.UseMiddleware<ResponseTimeMiddleware>();
-    
+
     app.UseSwagger();
     app.UseSwaggerUI(opt =>
     {

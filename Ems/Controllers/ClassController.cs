@@ -1,7 +1,5 @@
 ﻿using Ems.Domain.Models;
 using Ems.Domain.Services;
-using Ems.Models;
-using Ems.Services;
 using Ems.Services.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

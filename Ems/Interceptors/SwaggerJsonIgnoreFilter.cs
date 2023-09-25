@@ -9,7 +9,8 @@ public class SwaggerJsonIgnoreFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var types = context.ApiDescription.ActionDescriptor.Parameters.SelectMany(x => x.ParameterType.GetMembers()).Where(mi => mi.GetCustomAttribute<JsonIgnoreAttribute>() is not null).ToList();
+        var types = context.ApiDescription.ActionDescriptor.Parameters.SelectMany(x => x.ParameterType.GetMembers())
+            .Where(mi => mi.GetCustomAttribute<JsonIgnoreAttribute>() is not null).ToList();
         foreach (var mi in types)
         {
             var parameters = operation.Parameters.Where(x => x.Name.StartsWith(mi.Name)).ToList();

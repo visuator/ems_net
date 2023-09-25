@@ -9,8 +9,9 @@ namespace Ems.Domain.Models;
 public class UpdateQrCodeStudentRecordStatusModel : IAuthenticated, IRequestTimeStamp
 {
     public string Content { get; set; }
-    [JsonIgnore]
-    public Guid AccountId { get; set; }
+
+    [JsonIgnore] public Guid AccountId { get; set; }
+
     public DateTime RequestedAt { get; set; }
 
     public class Validator : AbstractValidator<UpdateQrCodeStudentRecordStatusModel>

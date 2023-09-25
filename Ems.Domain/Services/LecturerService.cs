@@ -38,8 +38,10 @@ public class LecturerService : ILecturerService
         var confirmationExpiration = requestedAt.Add(_accountOptions.LinkExpirationTime);
         foreach (var model in models)
         {
-            var existsLecturer = await _dbContext.Lecturers.NotCacheable().AsTracking().Include(x => x.Account).Where(x =>
-                    x.FirstName == model.FirstName && x.LastName == model.LastName && x.MiddleName == model.MiddleName)
+            var existsLecturer = await _dbContext.Lecturers.NotCacheable().AsTracking().Include(x => x.Account).Where(
+                    x =>
+                        x.FirstName == model.FirstName && x.LastName == model.LastName &&
+                        x.MiddleName == model.MiddleName)
                 .SingleOrDefaultAsync(token);
             if (existsLecturer is not null) _mapper.Map(model, existsLecturer);
 

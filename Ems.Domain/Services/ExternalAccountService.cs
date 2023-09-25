@@ -38,7 +38,8 @@ public class ExternalAccountService : IExternalAccountService
     public async Task DeleteExternalAccount(DeleteExternalAccountModel model, CancellationToken token = new())
     {
         var externalAccount =
-            await _dbContext.ExternalAccounts.NotCacheable().AsTracking().Where(x => x.Id == model.Id).SingleAsync(token);
+            await _dbContext.ExternalAccounts.NotCacheable().AsTracking().Where(x => x.Id == model.Id)
+                .SingleAsync(token);
         _dbContext.ExternalAccounts.Remove(externalAccount);
         await _dbContext.SaveChangesAsync(token);
     }

@@ -6,8 +6,8 @@ namespace Ems.Services.Validation;
 public class ValidatorExecutorBuilder<T> : IValidatorExecutorBuilder<T>
 {
     private readonly T _model;
-    private readonly IValidator<T> _validator;
     private readonly ModelStateDictionary? _modelState;
+    private readonly IValidator<T> _validator;
 
     public ValidatorExecutorBuilder(T model, IValidator<T> validator, ModelStateDictionary? modelState = null)
     {

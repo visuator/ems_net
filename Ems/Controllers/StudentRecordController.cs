@@ -17,7 +17,7 @@ public class StudentRecordController : ControllerBase
     {
         _studentRecordService = studentRecordService;
     }
-    
+
     [HttpPost("geo")]
     [ServiceFilter(typeof(ValidationActionFilter<CreateGeolocationStudentRecordModel>))]
     public async Task<IActionResult> Create([FromBody] CreateGeolocationStudentRecordModel model,

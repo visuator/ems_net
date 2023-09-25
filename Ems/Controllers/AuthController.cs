@@ -2,7 +2,6 @@
 using Ems.Domain.Services;
 using Ems.Interceptors;
 using Ems.Models;
-using Ems.Services;
 using Ems.Services.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +18,8 @@ public class AuthController : ControllerBase
     private readonly IExternalAccountService _externalAccountService;
     private readonly IValidatorResolverService _validatorResolverService;
 
-    public AuthController(IAccountService accountService, IExternalAccountService externalAccountService, IValidatorResolverService validatorResolverService)
+    public AuthController(IAccountService accountService, IExternalAccountService externalAccountService,
+        IValidatorResolverService validatorResolverService)
     {
         _accountService = accountService;
         _externalAccountService = externalAccountService;
