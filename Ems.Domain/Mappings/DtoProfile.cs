@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ems.Core.Entities;
+using Ems.Core.Entities.Abstractions;
 using Ems.Models.Dtos;
 
 namespace Ems.Domain.Mappings;
@@ -8,6 +9,15 @@ public class DtoProfile : Profile
 {
     public DtoProfile()
     {
+        CreateMap<StudentRecord, StudentRecordDto>().IncludeAllDerived();
+        CreateMap<StudentRecordSession, StudentRecordSessionDto>().IncludeAllDerived();
+        
+        CreateMap<GeolocationStudentRecord, GeolocationStudentRecordDto>();
+        CreateMap<GeolocationStudentRecordSession, GeolocationStudentRecordSessionDto>();
+        CreateMap<QrCodeStudentRecord, QrCodeStudentRecordDto>();
+        CreateMap<QrCodeStudentRecordSession, QrCodeStudentRecordSessionDto>();
+        CreateMap<QrCodeAttempt, QrCodeAttemptDto>();
+        
         CreateMap<Group, GroupDto>()
             .ForMember(x => x.Students, opt => opt.ExplicitExpansion())
             .ForMember(x => x.Classes, opt => opt.ExplicitExpansion());

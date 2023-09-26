@@ -1,8 +1,10 @@
 ﻿using Ems.Domain.Models;
 using Ems.Domain.Services;
 using Ems.Interceptors;
+using Ems.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace Ems.Controllers;
 
@@ -31,10 +33,18 @@ public class StudentRecordController : ControllerBase
 
     [Authorize(Roles = "student")]
     [HttpPost("qr")]
+    [ServiceFilter(typeof(ValidationActionFilter<UpdateQrCodeStudentRecordStatusModel>))]
     public async Task<IActionResult> Update([FromBody] UpdateQrCodeStudentRecordStatusModel model,
         CancellationToken token = new())
     {
         await _studentRecordService.Update(model, token);
         return Ok();
+    }
+
+    [Authorize(Roles = "admin")]
+    [HttpGet()]
+    public async Task<IActionResult> GetAll(ODataQueryOptions<StudentRecordDto> query, CancellationToken token = new())
+    {
+        return Ok(await _studentRecordService.GetAll(query, token));
     }
 }

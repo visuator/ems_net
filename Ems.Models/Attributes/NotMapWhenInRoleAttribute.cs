@@ -2,7 +2,7 @@
 
 namespace Ems.Infrastructure.Attributes;
 
-[AttributeUsage(AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public class NotMapWhenInRoleAttribute : Attribute
 {
     public NotMapWhenInRoleAttribute(Role role)
