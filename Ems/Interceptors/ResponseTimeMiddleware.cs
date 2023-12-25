@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Ems.Constants;
 
 namespace Ems.Interceptors;
 
@@ -13,7 +12,7 @@ public class ResponseTimeMiddleware : IMiddleware
         context.Response.OnStarting(state =>
         {
             var httpContext = (HttpContext)state;
-            httpContext.Response.Headers.Add(CustomHeaderNames.ResponseTime,
+            httpContext.Response.Headers.Add("X-Response-Time",
                 new[] { watch.ElapsedMilliseconds.ToString() });
 
             watch.Stop();

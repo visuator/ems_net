@@ -1,6 +1,5 @@
 version: '3.4'
 
-name: ems_stack
 networks:
   db:
   app:
@@ -53,6 +52,5 @@ services:
       - app
       - acc
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWROD=admin
-    
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin

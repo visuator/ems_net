@@ -1,10 +1,8 @@
 using EFCoreSecondLevelCacheInterceptor;
-using Ems.Constants;
 using Ems.Domain.Jobs;
 using Ems.Domain.Services;
 using Ems.Domain.Services.Import;
 using Ems.Domain.Services.Scheduling;
-using Ems.Infrastructure.Constants;
 using Ems.Infrastructure.Exceptions;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
@@ -13,7 +11,6 @@ using Ems.Interceptors;
 using Ems.Models;
 using Ems.Services;
 using Ems.Services.Hooks;
-using Ems.Services.Validation;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
@@ -115,7 +112,7 @@ builder.Services.AddAuthentication().AddJwtBearer(opt =>
     if (builder.Environment.IsDevelopment()) opt.IncludeErrorDetails = true;
 });
 builder.Services.AddAuthorization();
-builder.Services.AddValidatorsFromAssembly(Assemblies.Domain);
+builder.Services.AddValidatorsFromAssembly(typeof(Ems.Models.AssemblyMarker).Assembly);
 
 builder.Services.AddHttpContextAccessor();
 
@@ -124,7 +121,7 @@ builder.Services.AddHostedService<DbInitializer>();
 builder.Services.AddQuartzHostedService();
 builder.Services.AddQuartz(opt =>
 {
-    var quartzConnection = builder.Configuration.GetConnectionString(Connections.Quartz);
+    var quartzConnection = builder.Configuration.GetConnectionString("Scheduler");
     opt.UseMicrosoftDependencyInjectionJobFactory();
     /*    opt.UsePersistentStore(storeOpt =>
         {
@@ -157,8 +154,12 @@ builder.Services.AddDbContext<EmsDbContext>((provider, opt) =>
 {
     opt.AddInterceptors(new EntityInterceptor(), provider.GetRequiredService<SecondLevelCacheInterceptor>());
     opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    var dbConnection = builder.Configuration.GetConnectionString(Connections.Db);
-    opt.UseNpgsql(dbConnection, npgsqlOpt => { npgsqlOpt.MigrationsAssembly(Assemblies.Infrastructure); });
+    var dbConnection = builder.Configuration.GetConnectionString("Database");
+    opt.UseNpgsql(dbConnection,
+        providerOpts =>
+        {
+            providerOpts.MigrationsAssembly(typeof(Ems.Infrastructure.AssemblyMarker).Assembly.FullName);
+        });
 });
 builder.Services.AddScoped<ImportServiceProvider>();
 builder.Services.AddScoped<ExcelClassPeriodImportService>();
@@ -180,7 +181,6 @@ builder.Services.AddScoped<IIdlePeriodService, IdlePeriodService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IStudentRecordSessionService, StudentRecordSessionService>();
 builder.Services.AddScoped<IStudentRecordService, StudentRecordService>();
-builder.Services.AddScoped<IValidatorResolverService, ValidatorResolverService>();
 
 builder.Services.AddSingleton<ResponseTimeMiddleware>();
 
@@ -190,13 +190,11 @@ builder.Services
     .AddScoped<IScheduleService<GeolocationStudentRecordSessionJob>, StudentRecordJobQuartzScheduleService>();
 
 builder.Services.AddSingleton<IQrCodeGenerator, QrCodeGenerator>();
-builder.Services.AddAutoMapper(Assemblies.Domain);
+builder.Services.AddAutoMapper(typeof(Ems.Domain.AssemblyMarker).Assembly);
 
 builder.Services.AddCors(opt =>
 {
-    opt.DefaultPolicyName = CorsPolicies.PublicCors;
-    opt.AddPolicy(CorsPolicies.PublicCors,
-        corsBuilder => { corsBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
+    opt.AddDefaultPolicy(corsBuilder => { corsBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
 });
 
 var app = builder.Build();
@@ -209,7 +207,6 @@ if (app.Environment.IsDevelopment())
         error.Run(async context =>
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
             var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
             if (exceptionFeature is not null)
                 await context.Response.WriteAsJsonAsync(new ExceptionResult
@@ -222,16 +219,7 @@ if (app.Environment.IsDevelopment())
     app.UseMiddleware<ResponseTimeMiddleware>();
 
     app.UseSwagger();
-    app.UseSwaggerUI(opt =>
-    {
-        opt.IndexStream = () =>
-        {
-            var directory = builder.Environment.ContentRootFileProvider.GetDirectoryContents(
-                Path.Combine(FileConstants.AppDataDirectory, FileConstants.StaticDirectory));
-            var swaggerUiIndexHtml = directory.Single(x => x.Name == FileConstants.SwaggerUIIndexHmtl);
-            return swaggerUiIndexHtml.CreateReadStream();
-        };
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
