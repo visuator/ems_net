@@ -1,16 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ems", "Ems\Ems.csproj", "{339B3745-FD0D-43CD-9EE4-7CEAF08A717B}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34316.72
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ems", "Ems\Ems.csproj", "{339B3745-FD0D-43CD-9EE4-7CEAF08A717B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ems.Core", "Ems.Core\Ems.Core.csproj", "{0F153A00-075D-40E1-98ED-48544AB0B35E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ems.Core", "Ems.Core\Ems.Core.csproj", "{0F153A00-075D-40E1-98ED-48544AB0B35E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ems.Infrastructure", "Ems.Infrastructure\Ems.Infrastructure.csproj", "{DD054FFE-BB4E-42ED-8FB8-9BF9E87E63E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ems.Infrastructure", "Ems.Infrastructure\Ems.Infrastructure.csproj", "{DD054FFE-BB4E-42ED-8FB8-9BF9E87E63E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ems.Models", "Ems.Models\Ems.Models.csproj", "{CF98522A-E389-468C-A0FC-231F9CCB5DE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ems.Models", "Ems.Models\Ems.Models.csproj", "{CF98522A-E389-468C-A0FC-231F9CCB5DE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ems.Domain", "Ems.Domain\Ems.Domain.csproj", "{35273AD8-3217-4DC2-B7CF-48468901A2DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ems.Domain", "Ems.Domain\Ems.Domain.csproj", "{35273AD8-3217-4DC2-B7CF-48468901A2DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ems.Tests", "Ems.Tests\Ems.Tests.csproj", "{9FC4D77E-04D4-40B5-974D-94C4A945D4D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ems.Tests", "Ems.Tests\Ems.Tests.csproj", "{9FC4D77E-04D4-40B5-974D-94C4A945D4D8}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{51537381-1448-46A7-8BD6-6F3D738C30D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,5 +47,12 @@ Global
 		{9FC4D77E-04D4-40B5-974D-94C4A945D4D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FC4D77E-04D4-40B5-974D-94C4A945D4D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FC4D77E-04D4-40B5-974D-94C4A945D4D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51537381-1448-46A7-8BD6-6F3D738C30D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51537381-1448-46A7-8BD6-6F3D738C30D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51537381-1448-46A7-8BD6-6F3D738C30D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51537381-1448-46A7-8BD6-6F3D738C30D5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

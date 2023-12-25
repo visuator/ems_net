@@ -1,8 +1,6 @@
-﻿using System.Security.Claims;
-using Ems.Domain.Constants;
-using Ems.Infrastructure.Exceptions;
-using Ems.Models;
+﻿using Ems.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 namespace Ems.Interceptors;
 
@@ -18,7 +16,7 @@ public class AuthenticatedActionFilter : IAsyncActionFilter
         }
         else
         {
-            throw new AuthenticationException(ErrorMessages.System.InvalidJwt);
+            //throw new AuthenticationException(ErrorMessages.System.InvalidJwt);
         }
 
         await next();

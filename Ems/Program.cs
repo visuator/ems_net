@@ -1,4 +1,3 @@
-using System.Text.Json;
 using EFCoreSecondLevelCacheInterceptor;
 using Ems.Constants;
 using Ems.Domain.Jobs;
@@ -25,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Quartz;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -116,27 +116,22 @@ builder.Services.AddAuthentication().AddJwtBearer(opt =>
 });
 builder.Services.AddAuthorization();
 builder.Services.AddValidatorsFromAssembly(Assemblies.Domain);
-builder.Services.AddScoped<IPasswordProvider, PasswordProvider>();
-builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHostedService<DbInitializer>();
-builder.Services.AddHostedService<EmailBackgroundService>();
-builder.Services.AddHostedService<AdminAccountInitializer>();
 
 builder.Services.AddQuartzHostedService();
 builder.Services.AddQuartz(opt =>
 {
     var quartzConnection = builder.Configuration.GetConnectionString(Connections.Quartz);
     opt.UseMicrosoftDependencyInjectionJobFactory();
-    opt.UsePersistentStore(storeOpt =>
-    {
-        storeOpt.UsePostgres(quartzConnection!);
-        storeOpt.UseJsonSerializer();
-    });
+    /*    opt.UsePersistentStore(storeOpt =>
+        {
+            storeOpt.UsePostgres(quartzConnection!);
+            storeOpt.UseJsonSerializer();
+        });*/
 });
-builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.Configure<AccountOptions>(builder.Configuration.GetSection(nameof(AccountOptions)).Bind);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)).Bind);
 builder.Services.Configure<StudentRecordOptions>(builder.Configuration.GetSection(nameof(StudentRecordOptions)).Bind);
@@ -173,7 +168,6 @@ builder.Services.AddScoped<ExcelGroupImportService>();
 builder.Services.AddScoped<ExcelLecturerImportService>();
 builder.Services.AddScoped<ExcelLessonImportService>();
 builder.Services.AddScoped<ExcelStudentImportService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IClassPeriodService, ClassPeriodService>();
 builder.Services.AddScoped<IClassroomService, ClassroomService>();
 builder.Services.AddScoped<IClassVersionService, ClassVersionService>();
@@ -183,11 +177,9 @@ builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IIdlePeriodService, IdlePeriodService>();
-builder.Services.AddScoped<IExternalAccountService, ExternalAccountService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IStudentRecordSessionService, StudentRecordSessionService>();
 builder.Services.AddScoped<IStudentRecordService, StudentRecordService>();
-builder.Services.AddSingleton<IAuthStorage, AuthStorage>();
 builder.Services.AddScoped<IValidatorResolverService, ValidatorResolverService>();
 
 builder.Services.AddSingleton<ResponseTimeMiddleware>();
@@ -197,9 +189,7 @@ builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJobQua
 builder.Services
     .AddScoped<IScheduleService<GeolocationStudentRecordSessionJob>, StudentRecordJobQuartzScheduleService>();
 
-builder.Services.AddSingleton<IEmailTemplateService, EmailTemplateService>();
 builder.Services.AddSingleton<IQrCodeGenerator, QrCodeGenerator>();
-builder.Services.AddSingleton<IUrlService, UrlService>();
 builder.Services.AddAutoMapper(Assemblies.Domain);
 
 builder.Services.AddCors(opt =>

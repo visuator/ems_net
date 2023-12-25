@@ -29,8 +29,6 @@ public class EntityProfile : Profile
 
         CreateMap<CreateSettingModel, Setting>()
             .ForMember(x => x.Id, opt => opt.Ignore());
-        CreateMap<AddExternalAccountModel, ExternalAccount>()
-            .ForMember(x => x.Id, opt => opt.Ignore());
         CreateMap<CreateIdlePeriodModel, IdlePeriod>()
             .ForMember(x => x.Id, opt => opt.Ignore());
 
@@ -47,13 +45,9 @@ public class EntityProfile : Profile
         CreateMap<ExcelGroupModel, Group>()
             .ForMember(x => x.Id, opt => opt.Ignore());
         CreateMap<ExcelLecturerModel, Lecturer>()
-            .ForMember(x => x.Id, opt => opt.Ignore())
-            .ForPath(x => x.Account.Phone, opt => opt.MapFrom(x => x.Phone))
-            .ForPath(x => x.Account.Email, opt => opt.MapFrom(x => x.Email));
+            .ForMember(x => x.Id, opt => opt.Ignore());
         CreateMap<ExcelStudentModel, Student>()
-            .ForMember(x => x.Id, opt => opt.Ignore())
-            .ForPath(x => x.Account.Phone, opt => opt.MapFrom(x => x.Phone))
-            .ForPath(x => x.Account.Email, opt => opt.MapFrom(x => x.Email));
+            .ForMember(x => x.Id, opt => opt.Ignore());
         CreateMap<ExcelLessonModel, Lesson>()
             .ForMember(x => x.Id, opt => opt.Ignore());
     }

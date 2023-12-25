@@ -11,13 +11,13 @@ public class DtoProfile : Profile
     {
         CreateMap<StudentRecord, StudentRecordDto>().IncludeAllDerived();
         CreateMap<StudentRecordSession, StudentRecordSessionDto>().IncludeAllDerived();
-        
+
         CreateMap<GeolocationStudentRecord, GeolocationStudentRecordDto>();
         CreateMap<GeolocationStudentRecordSession, GeolocationStudentRecordSessionDto>();
         CreateMap<QrCodeStudentRecord, QrCodeStudentRecordDto>();
         CreateMap<QrCodeStudentRecordSession, QrCodeStudentRecordSessionDto>();
         CreateMap<QrCodeAttempt, QrCodeAttemptDto>();
-        
+
         CreateMap<Group, GroupDto>()
             .ForMember(x => x.Students, opt => opt.ExplicitExpansion())
             .ForMember(x => x.Classes, opt => opt.ExplicitExpansion());
@@ -33,26 +33,14 @@ public class DtoProfile : Profile
             .ForMember(x => x.Template, opt => opt.ExplicitExpansion());
         CreateMap<Classroom, ClassroomDto>();
         CreateMap<Lecturer, LecturerDto>()
-            .ForMember(x => x.Account, opt => opt.ExplicitExpansion())
             .ForMember(x => x.Classes, opt => opt.ExplicitExpansion());
         CreateMap<Lesson, LessonDto>()
             .ForMember(x => x.Classes, opt => opt.ExplicitExpansion());
         CreateMap<ClassPeriod, ClassPeriodDto>()
             .ForMember(x => x.Classes, opt => opt.ExplicitExpansion());
-        CreateMap<Student, StudentDto>()
-            .ForMember(x => x.Account, opt => opt.ExplicitExpansion());
-        CreateMap<Account, AccountDto>()
-            .ForMember(x => x.Roles, opt => opt.ExplicitExpansion())
-            .ForMember(x => x.ExternalAccounts, opt => opt.ExplicitExpansion())
-            .ForMember(x => x.PasswordHash, opt => opt.Ignore())
-            .ForMember(x => x.PasswordSalt, opt => opt.Ignore())
-            .ForMember(x => x.RefreshTokens, opt => opt.Ignore());
-        CreateMap<AccountRole, AccountRoleDto>()
-            .ForMember(x => x.Account, opt => opt.ExplicitExpansion());
+        CreateMap<Student, StudentDto>();
         CreateMap<IdlePeriod, IdlePeriodDto>()
             .ForMember(x => x.Group, opt => opt.ExplicitExpansion());
-        CreateMap<ExternalAccount, ExternalAccountDto>()
-            .ForMember(x => x.Account, opt => opt.ExplicitExpansion());
         CreateMap<Setting, SettingDto>();
     }
 }

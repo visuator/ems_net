@@ -58,7 +58,8 @@ public class StudentRecordSessionService : IStudentRecordSessionService
 
                 for (var i = 0; i < _qrCodeStudentRecordSessionOptions.MaxAttempts; i++)
                 {
-                    var content = $"{id}-{HashHelper.GenerateRandomToken()}";
+                    //var content = $"{id}-{HashHelper.GenerateRandomToken()}";
+                    var content = "";
                     var image = _qrCodeGenerator.Get(content, _qrCodeStudentRecordSessionOptions.LogoFileName);
                     dst.Attempts.Add(new QrCodeAttempt
                     {

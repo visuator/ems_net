@@ -17,19 +17,16 @@ namespace Ems.Domain.Services;
 
 public class ClassVersionService : IClassVersionService
 {
-    private readonly IAuthStorage _authStorage;
     private readonly EmsDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IScheduleService<PublishClassVersionJob> _publishClassVersionScheduleService;
 
     public ClassVersionService(EmsDbContext dbContext,
-        IScheduleService<PublishClassVersionJob> publishClassVersionScheduleService, IMapper mapper,
-        IAuthStorage authStorage)
+        IScheduleService<PublishClassVersionJob> publishClassVersionScheduleService, IMapper mapper)
     {
         _dbContext = dbContext;
         _publishClassVersionScheduleService = publishClassVersionScheduleService;
         _mapper = mapper;
-        _authStorage = authStorage;
     }
 
     public async Task Import(ExcelClassVersionModel model, CancellationToken token = new())
@@ -77,7 +74,7 @@ public class ClassVersionService : IClassVersionService
     public async Task<List<ClassVersionDto>> GetAll(ODataQueryOptions<ClassVersionDto> query,
         CancellationToken token = new())
     {
-        return await _dbContext.ClassVersions.GetQuery(_mapper, query).ODataMapFromRoles(_authStorage.CurrentRoles)
+        return await _dbContext.ClassVersions.GetQuery(_mapper, query).ODataMapFromRoles(new List<Role>())
             .ToListAsync(token);
     }
 }

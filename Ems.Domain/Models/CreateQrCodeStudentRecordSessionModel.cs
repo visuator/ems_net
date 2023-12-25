@@ -1,9 +1,7 @@
-﻿using System.Text.Json.Serialization;
-using Ems.Core.Entities;
-using Ems.Domain.Constants;
-using Ems.Domain.Services;
+﻿using Ems.Core.Entities;
 using Ems.Models;
 using FluentValidation;
+using System.Text.Json.Serialization;
 
 namespace Ems.Domain.Models;
 
@@ -16,7 +14,7 @@ public class CreateQrCodeStudentRecordSessionModel : IRequestTimeStamp, IAuthent
 
     public class Validator : AbstractValidator<CreateQrCodeStudentRecordSessionModel>
     {
-        public Validator(IAccountService accountService, IStudentService studentService, IClassService classService)
+        /*public Validator(IAccountService accountService, IStudentService studentService, IClassService classService)
         {
             RuleFor(x => x)
                 .Cascade(CascadeMode.Stop)
@@ -28,6 +26,6 @@ public class CreateQrCodeStudentRecordSessionModel : IRequestTimeStamp, IAuthent
                 .WithMessage(ErrorMessages.Account.IsNotExists)
                 .MustAsync(async (model, token) => await studentService.Exists(model.StudentId, token))
                 .WithName(nameof(CreateQrCodeStudentRecordSessionModel));
-        }
+        }*/
     }
 }

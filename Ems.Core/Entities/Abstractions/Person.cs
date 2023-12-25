@@ -6,8 +6,6 @@ public abstract class Person : EntityBase, ISingleKeyEntity
 {
     [Column("account_id")] public Guid AccountId { get; set; }
 
-    public Account Account { get; set; }
-
     [Column("first_name")] public string FirstName { get; set; }
 
     [Column("last_name")] public string LastName { get; set; }

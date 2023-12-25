@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Ems.Domain.Constants;
-using Ems.Domain.Services;
-using Ems.Models;
+﻿using Ems.Models;
 using FluentValidation;
+using System.Text.Json.Serialization;
 
 namespace Ems.Domain.Models;
 
@@ -17,14 +15,14 @@ public class CreateGeolocationStudentRecordModel : IAuthenticated
 
     public class Validator : AbstractValidator<CreateGeolocationStudentRecordModel>
     {
-        public Validator(IAccountService accountService, IClassService classService)
-        {
-            RuleFor(x => x)
-                .MustAsync(async (model, token) => await accountService.Exists(model.AccountId, token))
-                .WithMessage(ErrorMessages.Account.IsNotExists)
-                .MustAsync(async (model, token) => await classService.Exists(model.ClassId, token))
-                .WithMessage(ErrorMessages.Class.IsNotExists)
-                .WithName(nameof(CreateGeolocationStudentRecordModel));
-        }
+        // public Validator(IClassService classService)
+        // {
+        //     RuleFor(x => x)
+        //         .MustAsync(async (model, token) => await accountService.Exists(model.AccountId, token))
+        //         .WithMessage(ErrorMessages.Account.IsNotExists)
+        //         .MustAsync(async (model, token) => await classService.Exists(model.ClassId, token))
+        //         .WithMessage(ErrorMessages.Class.IsNotExists)
+        //         .WithName(nameof(CreateGeolocationStudentRecordModel));
+        // }
     }
 }

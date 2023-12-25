@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
+using Ems.Core.Entities.Enums;
 using Ems.Domain.Extensions;
 using Ems.Domain.Models;
 using Ems.Infrastructure.Storages;
@@ -80,10 +81,10 @@ public class ClassService : IClassService
 
     public async Task<Class?> GetCurrent(Guid accountId, DateTime requestedAt, CancellationToken token = new())
     {
-        var accountRoles = await _dbContext.AccountRoles.Where(x => x.AccountId == accountId).Select(x => x.Role)
-            .ToListAsync(token);
+        // var accountRoles = await _dbContext.AccountRoles.Where(x => x.AccountId == accountId).Select(x => x.Role)
+        //     .ToListAsync(token);
         return await _dbContext.Classes.Where(x => requestedAt >= x.StartingAt && requestedAt <= x.EndingAt)
-            .ResolveByAccountRoles(accountId, accountRoles)
+            .ResolveByAccountRoles(accountId, new List<Role>())
             .SingleOrDefaultAsync(token);
     }
 }

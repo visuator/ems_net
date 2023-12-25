@@ -1,9 +1,9 @@
-﻿using System.Linq.Expressions;
-using System.Reflection;
-using Ems.Core.Entities;
+﻿using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
 using Ems.Infrastructure.Attributes;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Ems.Domain.Extensions;
 
@@ -137,7 +137,7 @@ public static class QueryableExtensions
                 .PathInclude();
 
         // аналогично, только тут уже Lecturer -> Account -> AccountRoles
-        return roles.Contains(Role.Lecturer) ? query.Where(x => x.Lecturer.Account.Id == accountId) : query;
+        return roles.Contains(Role.Lecturer) ? query.Where(x => x.Lecturer.AccountId == accountId) : query;
     }
 
     public static IQueryable<T> ODataMapFromRoles<T>(this IQueryable<T> query, List<Role> roles)
