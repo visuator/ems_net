@@ -16,9 +16,7 @@ public class DbInitializer : IHostedService
     {
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<EmsDbContext>();
-
-        var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync(token);
-        if (pendingMigrations.Any()) await dbContext.Database.MigrateAsync(token);
+        await dbContext.Database.MigrateAsync(token);
     }
 
     public Task StopAsync(CancellationToken token)

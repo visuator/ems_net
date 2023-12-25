@@ -19,6 +19,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Quartz;
+using Quartz.Impl.AdoJobStore;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 
@@ -113,17 +115,20 @@ builder.Services.AddValidatorsFromAssembly(typeof(Ems.Models.AssemblyMarker).Ass
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHostedService<DbInitializer>();
-
 builder.Services.AddQuartzHostedService();
 builder.Services.AddQuartz(opt =>
 {
-    var quartzConnection = builder.Configuration.GetConnectionString("Scheduler");
+    var quartzConnection = builder.Configuration.GetConnectionString("Database");
     opt.UseMicrosoftDependencyInjectionJobFactory();
-    /*    opt.UsePersistentStore(storeOpt =>
+    opt.UsePersistentStore(storeOpt =>
+    {
+        storeOpt.UsePostgres(postgresOpts =>
         {
-            storeOpt.UsePostgres(quartzConnection!);
-            storeOpt.UseJsonSerializer();
-        });*/
+            postgresOpts.UseDriverDelegate<PostgreSQLDelegate>();
+            postgresOpts.ConnectionString = quartzConnection!;
+        });
+        storeOpt.UseJsonSerializer();
+    });
 });
 builder.Services.Configure<AccountOptions>(builder.Configuration.GetSection(nameof(AccountOptions)).Bind);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)).Bind);
@@ -148,6 +153,7 @@ builder.Services.AddEFSecondLevelCache(opt =>
 });
 builder.Services.AddDbContext<EmsDbContext>((provider, opt) =>
 {
+    opt.UseSnakeCaseNamingConvention(CultureInfo.InvariantCulture);
     opt.AddInterceptors(new EntityInterceptor(), provider.GetRequiredService<SecondLevelCacheInterceptor>());
     opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     var dbConnection = builder.Configuration.GetConnectionString("Database");

@@ -1,6 +1,6 @@
 ﻿namespace Ems.Core.Entities.Abstractions;
 
-public abstract class StudentRecordSession : ISingleKeyEntity
+public class StudentRecordSession : ISingleKeyEntity
 {
     public DateTime StartedAt { get; set; }
     public DateTime EndingAt { get; set; }

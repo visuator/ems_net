@@ -1,6 +1,6 @@
 ﻿namespace Ems.Core.Entities.Abstractions;
 
-public abstract class Person : EntityBase, ISingleKeyEntity
+public class Person : EntityBase, ISingleKeyEntity
 {
     public Guid AccountId { get; set; }
     public string FirstName { get; set; }

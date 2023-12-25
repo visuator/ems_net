@@ -2,7 +2,7 @@
 
 namespace Ems.Core.Entities.Abstractions;
 
-public abstract class StudentRecord : EntityBase, ISingleKeyEntity
+public class StudentRecord : EntityBase, ISingleKeyEntity
 {
     public Guid StudentId { get; set; }
     public Student Student { get; set; }
