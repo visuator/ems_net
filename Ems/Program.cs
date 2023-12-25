@@ -1,16 +1,14 @@
 using EFCoreSecondLevelCacheInterceptor;
 using Ems.Domain.Jobs;
 using Ems.Domain.Services;
-using Ems.Domain.Services.Import;
 using Ems.Domain.Services.Scheduling;
 using Ems.Infrastructure.Exceptions;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
-using Ems.Infrastructure.Storages;
+using Ems.Infrastructure.Storage;
 using Ems.Interceptors;
 using Ems.Models;
 using Ems.Services;
-using Ems.Services.Hooks;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
@@ -21,13 +19,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Quartz;
+using System.Text;
 using System.Text.Json;
 
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 var builder = WebApplication.CreateBuilder(args);
-
-var startupHooks = new IStartupHook[] { new ExcelStartupHook() };
-foreach (var startupHook in startupHooks) await startupHook.Execute();
-
 builder.Services.AddApiVersioning(opt =>
 {
     opt.AssumeDefaultVersionWhenUnspecified = true;
@@ -161,14 +157,6 @@ builder.Services.AddDbContext<EmsDbContext>((provider, opt) =>
             providerOpts.MigrationsAssembly(typeof(Ems.Infrastructure.AssemblyMarker).Assembly.FullName);
         });
 });
-builder.Services.AddScoped<ImportServiceProvider>();
-builder.Services.AddScoped<ExcelClassPeriodImportService>();
-builder.Services.AddScoped<ExcelClassroomImportService>();
-builder.Services.AddScoped<ExcelClassVersionImportService>();
-builder.Services.AddScoped<ExcelGroupImportService>();
-builder.Services.AddScoped<ExcelLecturerImportService>();
-builder.Services.AddScoped<ExcelLessonImportService>();
-builder.Services.AddScoped<ExcelStudentImportService>();
 builder.Services.AddScoped<IClassPeriodService, ClassPeriodService>();
 builder.Services.AddScoped<IClassroomService, ClassroomService>();
 builder.Services.AddScoped<IClassVersionService, ClassVersionService>();

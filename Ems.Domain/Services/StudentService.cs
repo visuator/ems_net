@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Ems.Infrastructure.Options;
-using Ems.Infrastructure.Storages;
+using Ems.Infrastructure.Storage;
 using Ems.Models.Excel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

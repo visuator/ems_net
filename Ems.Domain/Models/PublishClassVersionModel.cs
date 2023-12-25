@@ -1,5 +1,4 @@
-﻿using Ems.Domain.Constants;
-using Ems.Domain.Services;
+﻿using Ems.Domain.Services;
 using Ems.Models;
 using FluentValidation;
 
@@ -17,7 +16,7 @@ public class PublishClassVersionModel : IRequestTimeStamp
             RuleFor(x => x)
                 .Cascade(CascadeMode.Stop)
                 .MustAsync(async (model, token) => await settingService.AnyAsync(token))
-                .WithMessage(ErrorMessages.ClassVersion.SettingNotExists)
+                //.WithMessage(ErrorMessages.ClassVersion.SettingNotExists)
                 .WithName(nameof(PublishClassVersionModel));
         }
     }

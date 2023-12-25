@@ -1,4 +1,4 @@
-﻿using Ems.Infrastructure.Storages;
+﻿using Ems.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ems.Services;

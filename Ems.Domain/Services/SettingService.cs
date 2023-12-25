@@ -5,7 +5,7 @@ using Ems.Domain.Jobs;
 using Ems.Domain.Models;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
-using Ems.Infrastructure.Storages;
+using Ems.Infrastructure.Storage;
 using Ems.Models;
 using Ems.Models.Dtos;
 using Microsoft.AspNetCore.OData.Query;

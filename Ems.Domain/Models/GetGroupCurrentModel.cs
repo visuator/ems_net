@@ -1,8 +1,7 @@
-﻿using System.Text.Json.Serialization;
-using Ems.Domain.Constants;
-using Ems.Domain.Services;
+﻿using Ems.Domain.Services;
 using Ems.Models;
 using FluentValidation;
+using System.Text.Json.Serialization;
 
 namespace Ems.Domain.Models;
 
@@ -17,7 +16,7 @@ public class GetGroupCurrentModel : IRequestTimeStamp
         {
             RuleFor(x => x)
                 .MustAsync(async (model, token) => await groupService.Exists(model.GroupId, token))
-                .WithMessage(ErrorMessages.Group.IsNotExists)
+                //.WithMessage(ErrorMessages.Group.IsNotExists)
                 .WithName(nameof(GetGroupInfoModel));
         }
     }

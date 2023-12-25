@@ -2,7 +2,7 @@
 using AutoMapper.AspNet.OData;
 using Ems.Core.Entities;
 using Ems.Domain.Models;
-using Ems.Infrastructure.Storages;
+using Ems.Infrastructure.Storage;
 using Ems.Models.Dtos;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;

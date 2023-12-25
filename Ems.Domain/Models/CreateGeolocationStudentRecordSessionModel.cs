@@ -1,9 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using Ems.Core.Entities;
-using Ems.Domain.Constants;
+﻿using Ems.Core.Entities;
 using Ems.Domain.Services;
 using Ems.Models;
 using FluentValidation;
+using System.Text.Json.Serialization;
 
 namespace Ems.Domain.Models;
 
@@ -24,9 +23,9 @@ public class CreateGeolocationStudentRecordSessionModel : IRequestTimeStamp, IAu
         {
             RuleFor(x => x)
                 .ChildRules(a => a.RuleFor(x => x.CurrentClass).NotNull())
-                .WithMessage(ErrorMessages.Class.IsNotExists)
+                //.WithMessage(ErrorMessages.Class.IsNotExists)
                 .MustAsync(async (model, token) => await classService.Exists(model.CurrentClass!.Id, token))
-                .WithMessage(ErrorMessages.Class.IsNotExists)
+                //.WithMessage(ErrorMessages.Class.IsNotExists)
                 .WithName(nameof(CreateGeolocationStudentRecordSessionModel));
         }
     }

@@ -1,9 +1,8 @@
 ﻿using Ems.Core.Entities;
 using Ems.Core.Entities.Enums;
-using Ems.Domain.Exceptions;
 using Ems.Domain.Services;
 using Ems.Infrastructure.Options;
-using Ems.Infrastructure.Storages;
+using Ems.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Quartz;
@@ -61,41 +60,36 @@ public class GeolocationStudentRecordSessionJob : IJobBase
 
         public async Task Execute(IJobExecutionContext context)
         {
-            try
+
+            if (context.MergedJobDataMap["model"] is not GeolocationStudentRecordSessionJob model)
+                throw new NullReferenceException();
+
+            var session = await _dbContext.StudentRecordSessions.AsTracking()
+                .OfType<GeolocationStudentRecordSession>()
+                .Where(x => x.Id == model.GeolocationStudentRecordSessionId).Include(x =>
+                    x.StudentRecords.Where(sr => sr.Status == StudentRecordStatus.Created)).SingleAsync();
+            var geolocationStudentRecords = session.StudentRecords.OfType<GeolocationStudentRecord>()
+                .Select(x => (x.Id, x.Latitude, x.Longitude)).ToList();
+            var distances =
+                CalculateDistance(
+                    geolocationStudentRecords, session.Latitude,
+                    session.Longitude);
+
+            var arrays = GetMajorityAndMinority(distances, _geolocationStudentRecordSessionOptions.Threshold);
+            foreach (var studentRecordId in arrays[ArrayType.Majority])
             {
-                if (context.MergedJobDataMap["model"] is not GeolocationStudentRecordSessionJob model)
-                    throw new NullModelJobException();
-
-                var session = await _dbContext.StudentRecordSessions.AsTracking()
-                    .OfType<GeolocationStudentRecordSession>()
-                    .Where(x => x.Id == model.GeolocationStudentRecordSessionId).Include(x =>
-                        x.StudentRecords.Where(sr => sr.Status == StudentRecordStatus.Created)).SingleAsync();
-                var geolocationStudentRecords = session.StudentRecords.OfType<GeolocationStudentRecord>()
-                    .Select(x => (x.Id, x.Latitude, x.Longitude)).ToList();
-                var distances =
-                    CalculateDistance(
-                        geolocationStudentRecords, session.Latitude,
-                        session.Longitude);
-
-                var arrays = GetMajorityAndMinority(distances, _geolocationStudentRecordSessionOptions.Threshold);
-                foreach (var studentRecordId in arrays[ArrayType.Majority])
-                {
-                    var studentRecord = session.StudentRecords.Single(x => x.Id == studentRecordId);
-                    studentRecord.Status = StudentRecordStatus.OnTime;
-                }
-
-                foreach (var studentRecordId in arrays[ArrayType.Minority])
-                {
-                    var studentRecord = session.StudentRecords.Single(x => x.Id == studentRecordId);
-                    studentRecord.Status = StudentRecordStatus.Passed;
-                }
-
-                await _dbContext.SaveChangesAsync();
+                var studentRecord = session.StudentRecords.Single(x => x.Id == studentRecordId);
+                studentRecord.Status = StudentRecordStatus.OnTime;
             }
-            catch (NullModelJobException e)
+
+            foreach (var studentRecordId in arrays[ArrayType.Minority])
             {
-                //TODO: Log error
+                var studentRecord = session.StudentRecords.Single(x => x.Id == studentRecordId);
+                studentRecord.Status = StudentRecordStatus.Passed;
             }
+
+            await _dbContext.SaveChangesAsync();
+
         }
     }
 }

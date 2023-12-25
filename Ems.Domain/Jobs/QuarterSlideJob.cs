@@ -1,6 +1,5 @@
-﻿using Ems.Domain.Constants;
-using Ems.Domain.Exceptions;
-using Ems.Infrastructure.Storages;
+﻿using Ems.Core.Entities.Enums;
+using Ems.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -9,10 +8,15 @@ namespace Ems.Domain.Jobs;
 public class QuarterSlideJob : IJobBase
 {
     public Guid SettingId { get; init; }
-    public string Id => $"{SettingId.ToString()}";
+    public string Id => $"{SettingId}";
 
     public class QuartzHandler : IJob
     {
+        private static readonly Dictionary<Quarter, Quarter> Map = new()
+        {
+            { Quarter.First, Quarter.Second },
+            { Quarter.Second, Quarter.First },
+        };
         private readonly EmsDbContext _dbContext;
 
         public QuartzHandler(EmsDbContext dbContext)
@@ -22,24 +26,13 @@ public class QuarterSlideJob : IJobBase
 
         public async Task Execute(IJobExecutionContext context)
         {
-            try
-            {
-                if (context.MergedJobDataMap["model"] is not QuarterSlideJob model)
-                    throw new NullModelJobException();
+            if (context.MergedJobDataMap["model"] is not QuarterSlideJob model)
+                throw new NullReferenceException();
 
-                var setting = await _dbContext.Settings.AsTracking().Where(x => x.Id == model.SettingId).SingleAsync();
+            var setting = await _dbContext.Settings.AsTracking().Where(x => x.Id == model.SettingId).SingleAsync();
 
-                setting.CurrentQuarter = QuarterSlider.Map[setting.CurrentQuarter];
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (NullModelJobException e)
-            {
-                //TODO: log + error
-            }
-            catch (Exception e)
-            {
-                //TODO: log
-            }
+            setting.CurrentQuarter = Map[setting.CurrentQuarter];
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

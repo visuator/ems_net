@@ -1,17 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Ems.Core.Constants;
-using Ems.Core.Entities.Abstractions;
+﻿using Ems.Core.Entities.Abstractions;
 using Ems.Core.Entities.Enums;
 
 namespace Ems.Core.Entities;
 
-[Table("class_versions", Schema = Schemas.Main)]
 public class ClassVersion : EntityBase, ISingleKeyEntity
 {
-    [Column("status")] public ClassVersionStatus Status { get; set; }
-
-    [Column("name")] public string Name { get; set; }
+    public ClassVersionStatus Status { get; set; }
+    public string Name { get; set; }
 
     public ICollection<Class> Classes { get; set; }
-    [Column("id")] public Guid Id { get; set; }
+    public Guid Id { get; set; }
 }

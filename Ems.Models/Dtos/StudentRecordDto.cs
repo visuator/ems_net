@@ -14,7 +14,6 @@ public class StudentRecordDto
     public ClassDto Class { get; set; }
 
     public StudentRecordStatus Status { get; set; }
-    public StudentRecordType Type { get; set; }
     public Guid? StudentRecordSessionId { get; set; }
     public StudentRecordSessionDto? StudentRecordSession { get; set; }
 }

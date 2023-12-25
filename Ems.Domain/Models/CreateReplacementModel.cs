@@ -1,7 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Ems.Domain.Constants;
-using Ems.Domain.Services;
+﻿using Ems.Domain.Services;
 using FluentValidation;
+using System.Text.Json.Serialization;
 
 namespace Ems.Domain.Models;
 
@@ -20,13 +19,13 @@ public class CreateReplacementModel
             RuleFor(x => x)
                 .Cascade(CascadeMode.Stop)
                 .MustAsync(async (model, token) => await classService.Exists(model.SourceClassId, token))
-                .WithMessage(ErrorMessages.Class.IsNotExists)
+                //.WithMessage(ErrorMessages.Class.IsNotExists)
                 .MustAsync(async (model, token) => await lecturerService.Exists(model.LecturerId, token))
-                .WithMessage(ErrorMessages.Lecturer.IsNotExists)
+                //.WithMessage(ErrorMessages.Lecturer.IsNotExists)
                 .MustAsync(async (model, token) => await lessonService.Exists(model.LessonId, token))
-                .WithMessage(ErrorMessages.Lecturer.IsNotExists)
+                //.WithMessage(ErrorMessages.Lecturer.IsNotExists)
                 .MustAsync(async (model, token) => await classroomService.Exists(model.ClassroomId, token))
-                .WithMessage(ErrorMessages.Classroom.IsNotExists)
+                //.WithMessage(ErrorMessages.Classroom.IsNotExists)
                 .WithName(nameof(CreateReplacementModel));
         }
     }

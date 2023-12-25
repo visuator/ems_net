@@ -6,6 +6,7 @@ using Quartz;
 
 namespace Ems.Domain.Services.Scheduling;
 
+// move to JobName.XHandler
 public class PublishClassVersionJobQuartzScheduleService : IScheduleService<PublishClassVersionJob>
 {
     private readonly ClassVersionOptions _classVersionOptions;

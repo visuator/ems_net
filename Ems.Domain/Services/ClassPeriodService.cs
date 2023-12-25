@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EFCoreSecondLevelCacheInterceptor;
 using Ems.Core.Entities;
-using Ems.Infrastructure.Storages;
+using Ems.Infrastructure.Storage;
 using Ems.Models.Excel;
 using Microsoft.EntityFrameworkCore;
 
