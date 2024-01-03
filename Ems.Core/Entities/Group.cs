@@ -5,9 +5,9 @@ namespace Ems.Core.Entities;
 
 public class Group : EntityBase, ISingleKeyEntity
 {
-    public required Course Course { get; set; }
-    public required string Name { get; set; }
-    public required ICollection<Student> Students { get; set; }
-    public required ICollection<Class> Classes { get; set; }
-    public required Guid Id { get; set; }
+    public Course Course { get; set; }
+    public string Name { get; set; } = default!;
+    public ICollection<Student> Students { get; set; } = default!;
+    public ICollection<Class> Classes { get; set; } = default!;
+    public Guid Id { get; set; }
 }

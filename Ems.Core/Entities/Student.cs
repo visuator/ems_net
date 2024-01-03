@@ -4,7 +4,7 @@ namespace Ems.Core.Entities;
 
 public class Student : Person
 {
-    public required Guid GroupId { get; set; }
+    public Guid GroupId { get; set; }
 
-    public required Group Group { get; set; }
+    public Group Group { get; set; } = default!;
 }

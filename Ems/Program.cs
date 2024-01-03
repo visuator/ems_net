@@ -1,8 +1,6 @@
 using EFCoreSecondLevelCacheInterceptor;
 using Ems.Domain.Jobs;
 using Ems.Domain.Services;
-using Ems.Domain.Services.Scheduling;
-using Ems.Infrastructure.Exceptions;
 using Ems.Infrastructure.Options;
 using Ems.Infrastructure.Services;
 using Ems.Infrastructure.Storage;
@@ -15,7 +13,6 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Quartz;
@@ -91,24 +88,6 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 builder.Services.AddOptions();
-builder.Services.AddAuthentication().AddJwtBearer(opt =>
-{
-    var jwtOptions = builder.Configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
-    if (jwtOptions is null) throw new StartupException($"{nameof(JwtOptions)} is not found in configuration");
-    opt.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateAudience = true,
-        ValidateIssuerSigningKey = true,
-        ValidateIssuer = true,
-        ValidateLifetime = true,
-        ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha256, SecurityAlgorithms.Aes128CbcHmacSha256 },
-        ValidAudience = jwtOptions.Audience,
-        ValidIssuer = jwtOptions.Issuer,
-        IssuerSigningKey = jwtOptions.SigningSecurityKey,
-        TokenDecryptionKey = jwtOptions.EncryptingSecurityKey
-    };
-    if (builder.Environment.IsDevelopment()) opt.IncludeErrorDetails = true;
-});
 builder.Services.AddAuthorization();
 builder.Services.AddValidatorsFromAssembly(typeof(Ems.Models.AssemblyMarker).Assembly);
 
@@ -130,20 +109,14 @@ builder.Services.AddQuartz(opt =>
         storeOpt.UseJsonSerializer();
     });
 });
-builder.Services.Configure<AccountOptions>(builder.Configuration.GetSection(nameof(AccountOptions)).Bind);
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)).Bind);
 builder.Services.Configure<StudentRecordOptions>(builder.Configuration.GetSection(nameof(StudentRecordOptions)).Bind);
-builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(nameof(EmailOptions)).Bind);
 builder.Services.Configure<ClassVersionOptions>(builder.Configuration.GetSection(nameof(ClassVersionOptions)).Bind);
 builder.Services.Configure<QuarterSlideJob>(builder.Configuration.GetSection(nameof(QuarterSlideJob)).Bind);
-builder.Services.Configure<EmailSenderOptions>(builder.Configuration.GetSection(nameof(EmailSenderOptions)).Bind);
-builder.Services.Configure<AdminAccountOptions>(builder.Configuration.GetSection(nameof(AdminAccountOptions)).Bind);
 builder.Services.Configure<QrCodeOptions>(builder.Configuration.GetSection(nameof(QrCodeOptions)).Bind);
 builder.Services.Configure<GeolocationStudentRecordSessionOptions>(builder.Configuration
     .GetSection(nameof(GeolocationStudentRecordSessionOptions)).Bind);
 builder.Services.Configure<QrCodeStudentRecordSessionOptions>(builder.Configuration
     .GetSection(nameof(QrCodeStudentRecordSessionOptions)).Bind);
-builder.Services.Configure<SwaggerOptions>(builder.Configuration.GetSection(nameof(SwaggerOptions)).Bind);
 
 builder.Services.AddMemoryCache();
 builder.Services.AddEFSecondLevelCache(opt =>
@@ -178,10 +151,9 @@ builder.Services.AddScoped<IStudentRecordService, StudentRecordService>();
 
 builder.Services.AddSingleton<ResponseTimeMiddleware>();
 
-builder.Services.AddScoped<IScheduleService<PublishClassVersionJob>, PublishClassVersionJobQuartzScheduleService>();
-builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJobQuartzScheduleService>();
-builder.Services
-    .AddScoped<IScheduleService<GeolocationStudentRecordSessionJob>, StudentRecordJobQuartzScheduleService>();
+builder.Services.AddScoped<IScheduleService<PublishClassVersionJob>, PublishClassVersionJob.ScheduleService>();
+builder.Services.AddScoped<IScheduleService<QuarterSlideJob>, QuarterSlideJob.ScheduleService>();
+builder.Services.AddScoped<IScheduleService<GeolocationStudentRecordSessionJob>, GeolocationStudentRecordSessionJob.ScheduleService>();
 
 builder.Services.AddSingleton<IQrCodeGenerator, QrCodeGenerator>();
 builder.Services.AddAutoMapper(typeof(Ems.Domain.AssemblyMarker).Assembly);

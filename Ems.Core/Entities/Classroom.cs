@@ -4,7 +4,7 @@ namespace Ems.Core.Entities;
 
 public class Classroom : EntityBase, ISingleKeyEntity
 {
-    public required string Name { get; set; }
-    public required ICollection<Class> Classes { get; set; }
-    public required Guid Id { get; set; }
+    public string Name { get; set; } = default!;
+    public ICollection<Class> Classes { get; set; } = default!;
+    public Guid Id { get; set; }
 }

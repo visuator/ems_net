@@ -4,5 +4,5 @@ namespace Ems.Core.Entities;
 
 public class Lecturer : Person
 {
-    public required ICollection<Class> Classes { get; set; }
+    public ICollection<Class> Classes { get; set; } = default!;
 }
