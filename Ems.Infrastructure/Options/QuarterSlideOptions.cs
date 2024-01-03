@@ -2,5 +2,5 @@
 
 public class QuarterSlideOptions
 {
-    public DayOfWeek PublicationDay { get; set; }
+    public required DayOfWeek PublicationDay { get; set; }
 }

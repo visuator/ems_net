@@ -25,8 +25,8 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
     networks:
       - db
   nginx:
@@ -35,6 +35,8 @@ services:
     restart: always
     volumes:
       - nginx:/etc/nginx/templates
+    ports:
+      - ${MAIN_PORT}:80
     networks:
       - app
       - acc
@@ -45,12 +47,12 @@ services:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:23.0.3
     restart: always
-    command: ["start-dev"]
+    command: "${KEYCLOAK_START_COMMAND}"
     ports:
-      - 8080:8080
+      - 5000:8080
     networks:
       - app
       - acc
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      - KEYCLOAK_ADMIN
+      - KEYCLOAK_ADMIN_PASSWORD

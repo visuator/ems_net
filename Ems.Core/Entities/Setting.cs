@@ -5,6 +5,6 @@ namespace Ems.Core.Entities;
 
 public class Setting : EntityBase, ISingleKeyEntity
 {
-    public Quarter CurrentQuarter { get; set; }
-    public Guid Id { get; set; }
+    public required Quarter CurrentQuarter { get; set; }
+    public required Guid Id { get; set; }
 }

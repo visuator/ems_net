@@ -2,5 +2,5 @@
 
 public class QrCodeOptions
 {
-    public int Size { get; set; }
+    public required int ImageSize { get; set; }
 }

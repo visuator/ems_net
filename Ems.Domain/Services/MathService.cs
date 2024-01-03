@@ -1,6 +1,6 @@
 ﻿namespace Ems.Domain.Services;
 
-public static class MathHelper
+public static class MathService
 {
     public static double Median(this List<int> data)
     {

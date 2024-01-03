@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ems.Domain.Services;
 
+public interface IClassPeriodService
+{
+    Task Import(List<ExcelClassPeriodModel> models, CancellationToken token = new());
+}
 public class ClassPeriodService : IClassPeriodService
 {
     private readonly EmsDbContext _dbContext;

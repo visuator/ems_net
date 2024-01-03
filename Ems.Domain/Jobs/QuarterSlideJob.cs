@@ -1,6 +1,9 @@
 ﻿using Ems.Core.Entities.Enums;
+using Ems.Infrastructure.Options;
+using Ems.Infrastructure.Services;
 using Ems.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Quartz;
 
 namespace Ems.Domain.Jobs;
@@ -33,6 +36,38 @@ public class QuarterSlideJob : IJobBase
 
             setting.CurrentQuarter = Map[setting.CurrentQuarter];
             await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public class ScheduleService : IScheduleService<QuarterSlideJob>
+    {
+        private readonly QuarterSlideOptions _quarterSlideOptions;
+        private readonly ISchedulerFactory _schedulerFactory;
+
+        public ScheduleService(ISchedulerFactory schedulerFactory,
+            IOptions<QuarterSlideOptions> quarterSlideOptions)
+        {
+            _schedulerFactory = schedulerFactory;
+            _quarterSlideOptions = quarterSlideOptions.Value;
+        }
+
+        public async Task ScheduleJob(QuarterSlideJob job, CancellationToken token = new())
+        {
+            var scheduler = await _schedulerFactory.GetScheduler(token);
+
+            var jobDetails = JobBuilder.Create<QuarterSlideJob.QuartzHandler>()
+                .WithIdentity($"{nameof(QuarterSlideJob)}-{job.Id}")
+                .UsingJobData(new JobDataMap
+                {
+                    { "model", job }
+                })
+                .Build();
+            var periodicalTrigger = TriggerBuilder.Create()
+                .WithIdentity($"periodical-{job!.Id}")
+                .WithCronSchedule($"0 0 0 ? * {(int)_quarterSlideOptions.PublicationDay + 1}")
+                .Build();
+
+            await scheduler.ScheduleJob(jobDetails, new[] { periodicalTrigger }, false, token);
         }
     }
 }

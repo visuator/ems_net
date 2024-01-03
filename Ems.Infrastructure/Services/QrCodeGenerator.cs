@@ -19,10 +19,12 @@ public class QrCodeGenerator : IQrCodeGenerator
 
     public byte[] Get(string content, string logoFileName)
     {
-        var directory = _webHostEnvironment.ContentRootFileProvider.GetDirectoryContents(
-            Path.Combine(FileConstants.AppDataDirectory, FileConstants.ImagesDirectory));
-        using var logo = directory.Single(x => x.Name == logoFileName).CreateReadStream();
-        var qrCodeLogo = new QRCodeLogo(logo);
-        return QRCodeWriter.CreateQrCodeWithLogo(content, qrCodeLogo, _qrCodeOptions.Size).ToPngBinaryData();
+        var logoPath = Path.Combine(_webHostEnvironment.ContentRootPath, FileConstants.AppDataDirectory,
+            FileConstants.ImagesDirectory, logoFileName);
+        using var logoStream = File.OpenRead(logoPath);
+        var qrCodeLogo = new QRCodeLogo(logoStream);
+        return QRCodeWriter
+            .CreateQrCodeWithLogo(content, qrCodeLogo, _qrCodeOptions.ImageSize)
+            .ToPngBinaryData();
     }
 }

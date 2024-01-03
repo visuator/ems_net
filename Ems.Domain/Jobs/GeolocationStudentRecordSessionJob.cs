@@ -2,6 +2,7 @@
 using Ems.Core.Entities.Enums;
 using Ems.Domain.Services;
 using Ems.Infrastructure.Options;
+using Ems.Infrastructure.Services;
 using Ems.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -26,7 +27,7 @@ public class GeolocationStudentRecordSessionJob : IJobBase
         double latitudeSource, double longitudeSource)
     {
         return studentRecords.Select(x => (x.StudentRecordId,
-            MathHelper.HaversineDistance(latitudeSource, longitudeSource, x.Latitude, x.Longitude))).ToList();
+            MathService.HaversineDistance(latitudeSource, longitudeSource, x.Latitude, x.Longitude))).ToList();
     }
 
     private static Dictionary<ArrayType, List<Guid>> GetMajorityAndMinority(
@@ -90,6 +91,37 @@ public class GeolocationStudentRecordSessionJob : IJobBase
 
             await _dbContext.SaveChangesAsync();
 
+        }
+    }
+
+    public class ScheduleService : IScheduleService<GeolocationStudentRecordSessionJob>
+    {
+        private readonly ISchedulerFactory _schedulerFactory;
+
+        public ScheduleService(ISchedulerFactory schedulerFactory)
+        {
+            _schedulerFactory = schedulerFactory;
+        }
+
+        public async Task ScheduleJob(GeolocationStudentRecordSessionJob sessionJob, CancellationToken token = new())
+        {
+            var scheduler = await _schedulerFactory.GetScheduler(token);
+
+            var jobDetails = JobBuilder.Create<GeolocationStudentRecordSessionJob.QuartzHandler>()
+                .WithIdentity($"{nameof(GeolocationStudentRecordSessionJob)}-{sessionJob.Id}")
+                .UsingJobData(new JobDataMap
+                {
+                    { "model", sessionJob }
+                }).Build();
+
+            var immediateJobTrigger = TriggerBuilder.Create()
+                .WithIdentity($"immediate-{sessionJob.Id}")
+                .WithPriority(1)
+                .StartAt(sessionJob.EndingAt)
+                .Build();
+
+            await scheduler.ScheduleJob(jobDetails, new[] { immediateJobTrigger }, false,
+                token);
         }
     }
 }

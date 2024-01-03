@@ -10,6 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ems.Domain.Services;
 
+public interface IClassroomService
+{
+    Task Import(List<ExcelClassroomModel> models, CancellationToken token = new());
+    Task<List<ClassroomDto>> GetAll(ODataQueryOptions<ClassroomDto> query, CancellationToken token = new());
+    Task<bool> Exists(Guid id, CancellationToken token = new());
+}
 public class ClassroomService : IClassroomService
 {
     private readonly EmsDbContext _dbContext;

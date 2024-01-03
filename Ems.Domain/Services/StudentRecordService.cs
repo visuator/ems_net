@@ -13,6 +13,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ems.Domain.Services;
 
+public interface IStudentRecordService
+{
+    Task<List<StudentRecordDto>> GetAll(ODataQueryOptions<StudentRecordDto> query, CancellationToken token = default);
+    Task Create(CreateGeolocationStudentRecordModel model, CancellationToken token = new());
+    Task Update(UpdateQrCodeStudentRecordStatusModel model, CancellationToken token = new());
+}
 public class StudentRecordService : IStudentRecordService
 {
     private readonly EmsDbContext _dbContext;

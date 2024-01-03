@@ -2,8 +2,7 @@
 
 public class QrCodeStudentRecordSessionOptions
 {
-    public TimeSpan Expiration { get; set; }
-    public TimeSpan SlidingTime { set; get; }
-    public int MaxAttempts { get; set; }
-    public string LogoFileName { get; set; }
+    public required TimeSpan Expiration { get; set; }
+    public required int MaxAttempts { get; set; }
+    public required string LogoFileName { get; set; }
 }

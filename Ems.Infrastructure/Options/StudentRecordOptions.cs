@@ -2,5 +2,5 @@
 
 public class StudentRecordOptions
 {
-    public TimeSpan StudentRecordBoundaryTime { get; set; }
+    public required TimeSpan StudentRecordBoundaryTime { get; set; }
 }

@@ -15,15 +15,15 @@ public class Class : EntityBase, ISingleKeyEntity
     public Group? Group { get; set; }
     public Guid? ClassPeriodId { get; set; }
     public ClassPeriod? ClassPeriod { get; set; }
-    public Guid LecturerId { get; set; }
-    public Lecturer Lecturer { get; set; }
-    public Guid LessonId { get; set; }
-    public Lesson Lesson { get; set; }
-    public Guid ClassroomId { get; set; }
-    public Classroom Classroom { get; set; }
-    public ClassType Type { get; set; }
+    public required Guid LecturerId { get; set; }
+    public required Lecturer Lecturer { get; set; }
+    public required Guid LessonId { get; set; }
+    public required Lesson Lesson { get; set; }
+    public required Guid ClassroomId { get; set; }
+    public required Classroom Classroom { get; set; }
+    public required ClassType Type { get; set; }
     public string? Link { get; set; }
     public DateTime? StartingAt { get; set; }
     public DateTime? EndingAt { get; set; }
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 }

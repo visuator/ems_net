@@ -14,6 +14,13 @@ using Microsoft.Extensions.Options;
 
 namespace Ems.Domain.Services;
 
+public interface ISettingService
+{
+    Task<bool> AnyAsync(CancellationToken token = new());
+    Task<List<SettingDto>> GetAll(ODataQueryOptions<SettingDto> query, CancellationToken token = new());
+    Task Create(CreateSettingModel model, CancellationToken token = new());
+    Task<QrCodeStudentRecordSessionOptionsModel> GetQrCodeStudentRecordSessionOptions(CancellationToken token = new());
+}
 public class SettingService : ISettingService
 {
     private readonly EmsDbContext _dbContext;

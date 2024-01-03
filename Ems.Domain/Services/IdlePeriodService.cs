@@ -9,6 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ems.Domain.Services;
 
+public interface IIdlePeriodService
+{
+    Task Create(CreateIdlePeriodModel model, CancellationToken token = new());
+    Task<List<IdlePeriodDto>> GetAll(ODataQueryOptions<IdlePeriodDto> query, CancellationToken token = new());
+}
 public class IdlePeriodService : IIdlePeriodService
 {
     private readonly EmsDbContext _dbContext;

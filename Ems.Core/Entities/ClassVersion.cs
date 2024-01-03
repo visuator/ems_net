@@ -5,9 +5,8 @@ namespace Ems.Core.Entities;
 
 public class ClassVersion : EntityBase, ISingleKeyEntity
 {
-    public ClassVersionStatus Status { get; set; }
-    public string Name { get; set; }
-
-    public ICollection<Class> Classes { get; set; }
-    public Guid Id { get; set; }
+    public required ClassVersionStatus Status { get; set; }
+    public required string Name { get; set; }
+    public required ICollection<Class> Classes { get; set; }
+    public required Guid Id { get; set; }
 }

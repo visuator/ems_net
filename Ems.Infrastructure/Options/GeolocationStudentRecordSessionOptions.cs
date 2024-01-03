@@ -2,6 +2,6 @@
 
 public class GeolocationStudentRecordSessionOptions
 {
-    public int Threshold { get; set; }
-    public TimeSpan Expiration { get; set; }
+    public required int Threshold { get; set; }
+    public required TimeSpan Expiration { get; set; }
 }
