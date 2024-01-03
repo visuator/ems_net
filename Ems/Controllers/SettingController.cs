@@ -1,4 +1,5 @@
-﻿using Ems.Domain.Models;
+﻿using Asp.Versioning;
+using Ems.Domain.Models;
 using Ems.Domain.Services;
 using Ems.Interceptors;
 using Ems.Models.Dtos;
@@ -36,7 +37,7 @@ public class SettingController : ControllerBase
     {
         return Ok(await _settingService.GetAll(query, token));
     }
-    
+
     [Authorize(Roles = "admin")]
     [HttpGet("qrCodeStudentRecordSessionOptions")]
     public async Task<IActionResult> GetQrCodeStudentRecordSessionOptions(CancellationToken token = new())

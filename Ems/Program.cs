@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using EFCoreSecondLevelCacheInterceptor;
 using Ems.Domain.Jobs;
 using Ems.Domain.Services;
@@ -11,13 +12,11 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Quartz;
 using Quartz.Impl.AdoJobStore;
-using System.Globalization;
 using System.Text;
 using System.Text.Json;
 
@@ -30,10 +29,9 @@ builder.Services.AddApiVersioning(opt =>
     opt.ReportApiVersions = true;
     opt.ApiVersionReader = new UrlSegmentApiVersionReader();
 });
-builder.Services.AddVersionedApiExplorer(opt =>
+builder.Services.AddApiVersioning(opt =>
 {
-    opt.GroupNameFormat = "'v'V";
-    opt.SubstituteApiVersionInUrl = true;
+    opt.ApiVersionReader = new UrlSegmentApiVersionReader();
     opt.DefaultApiVersion = new ApiVersion(1, 0);
 });
 
@@ -126,7 +124,6 @@ builder.Services.AddEFSecondLevelCache(opt =>
 });
 builder.Services.AddDbContext<EmsDbContext>((provider, opt) =>
 {
-    opt.UseSnakeCaseNamingConvention(CultureInfo.InvariantCulture);
     opt.AddInterceptors(new EntityInterceptor(), provider.GetRequiredService<SecondLevelCacheInterceptor>());
     opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     var dbConnection = builder.Configuration.GetConnectionString("Database");
